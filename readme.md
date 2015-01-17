@@ -9,7 +9,7 @@ This extensions add ability to display small webpage parts called widgets (like 
 * Collects all site widgets which could be created by you or downloaded
 * Render each widget in way you want
 
-## Instalation
+## Installation
 
 The best way to install ipub/widgets-manager is using  [Composer](http://getcomposer.org/):
 
