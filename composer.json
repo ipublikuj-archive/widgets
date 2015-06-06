@@ -2,13 +2,14 @@
 	"name"			: "ipub/widgets-manger",
 	"type"			: "library",
 	"description"	: "Widgets manager for Nette Framework",
-	"keywords"		: ["nette", "widgets", "tools", "components"],
-	"homepage"		: "https://github.com/iPublikuj/WidgetsManager.git",
+	"keywords"		: ["nette", "widgets", "tools", "components", "ipub", "ipublikuj"],
+	"homepage"		: "https://github.com/iPublikuj/WidgetsManager",
 	"license"		: ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
 
-	"authors"		: [
+	"authors": [
 		{
-			"name"		: "Adam Kadlec",
+			"name"		: "iPublikuj:cms",
+			"email"		: "info@ipublikuj.eu",
 			"homepage"	: "http://www.ipublikuj.eu/"
 		}
 	],
