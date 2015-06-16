@@ -1,28 +1,37 @@
 <?php
 /**
- * WidgetsProvider.php
+ * WidgetsManager.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	common
  * @since		5.0
  *
  * @date		16.09.14
  */
 
-namespace IPub\WidgetsManager;
+namespace IPub\Widgets;
 
 use Nette;
 use Nette\Application;
 use Nette\Localization;
 use Nette\Security;
 
-use IPub\WidgetsManager\Filters;
+use IPub\Widgets\Filters;
 
-class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \ArrayAccess
+use IPub\Packages;
+
+class WidgetsManager extends Packages\PackagesManager
 {
+	const CLASSNAME = __CLASS__;
+
+	/**
+	 * @var Widgets\IWidget[]
+	 */
+	protected $widgets = [];
+
 	/**
 	 * @var Application\UI\Presenter
 	 */
@@ -34,32 +43,40 @@ class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \Array
 	protected $user;
 
 	/**
-	 * @var Widgets\IWidget[]
-	 */
-	protected $widgets = [];
-
-	/**
 	 * @var Widgets\IFactory[]
 	 */
 	protected $factories = [];
 
 	/**
-	 * @var FilterManager
+	 * @var FiltersManager
 	 */
 	protected $filters;
 
 	/**
+	 * @var DecoratorsManager
+	 */
+	protected $decorators;
+
+	/**
+	 * @param Packages\Repository\IInstalledRepository $repository
+	 * @param Packages\Installers\IInstaller $installer
 	 * @param Application\Application $application
 	 * @param Security\User $user
-	 * @param FilterManager $filters
+	 * @param FiltersManager $filters
+	 * @param DecoratorsManager $decorators
 	 */
 	public function __construct(
+		Packages\Repository\IInstalledRepository $repository,
+		Packages\Installers\IInstaller $installer,
 		Application\Application $application,
 		Security\User $user,
-		FilterManager $filters = NULL
+		FiltersManager $filters = NULL,
+		DecoratorsManager $decorators = NULL
 	) {
+		parent::__construct($repository, $installer);
+
 		// Register filters
-		$this->filters = $filters ?: new FilterManager;
+		$this->filters = $filters ?: new FiltersManager;
 
 		// Application actual presenter
 		$this->presenter = $application->getPresenter();
@@ -88,7 +105,7 @@ class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \Array
 	 *
 	 * @param  string $type
 	 *
-	 * @return Widgets\IWidget|null
+	 * @return Widgets\IControl|NULL
 	 */
 	public function get($type)
 	{
@@ -110,7 +127,7 @@ class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \Array
 	 *
 	 * @return $this
 	 */
-	public function registerWidget(Widgets\IFactory $factory)
+	public function register(Widgets\IFactory $factory)
 	{
 		// Get widget type
 		$type = $factory::WIDGET_TYPE;
@@ -128,39 +145,29 @@ class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \Array
 	}
 
 	/**
-	 * {@see FilterManager::register}
-	 */
-	public function registerFilter($name, $filter, $priority = 0)
-	{
-		$this->filters->register($name, $filter, $priority);
-	}
-
-	/**
 	 * Get widgets filter manager
 	 *
-	 * @return FilterManager
+	 * @return FiltersManager
 	 */
-	public function getFilterManager()
+	public function getFiltersManager()
 	{
 		return $this->filters;
 	}
 
 	/**
-	 * Get widgets decorator
+	 * Get widgets decorators manager
 	 *
-	 * @param string $decorator
-	 *
-	 * @return Decorators\IDecorator
+	 * @return DecoratorsManager
 	 */
-	public function getDecorator($decorator)
+	public function getDecoratorManager()
 	{
-		return $decorator;
+		return $this->decorators;
 	}
 
 	/**
-	 * Implements the IteratorAggregate.
+	 * Implements the \IteratorAggregate
 	 *
-	 * @return \ArrayIterator
+	 * @return \Iterator
 	 */
 	public function getIterator()
 	{
@@ -168,10 +175,11 @@ class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \Array
 	}
 
 	/**
-	 * Whether an application parameter or an object exists
+	 * Implements the \ArrayAccess
 	 *
 	 * @param  string $offset
-	 * @return mixed
+	 *
+	 * @return bool
 	 */
 	public function offsetExists($offset)
 	{
@@ -179,10 +187,11 @@ class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \Array
 	}
 
 	/**
-	 * Gets an application parameter or an object
+	 * Implements the \ArrayAccess
 	 *
-	 * @param  string $offset
-	 * @return mixed
+	 * @param string $offset
+	 *
+	 * @return Packages\Entities\IPackage|NULL
 	 */
 	public function offsetGet($offset)
 	{
@@ -190,23 +199,31 @@ class WidgetsProvider extends Nette\Object implements \IteratorAggregate, \Array
 	}
 
 	/**
-	 * Sets an application parameter or an object
+	 * Implements the \ArrayAccess
 	 *
-	 * @param  string $offset
-	 * @param  mixed  $value
+	 * @param string $offset
+	 * @param Packages\Entities\IPackage $value
+	 *
+	 * @return $this
 	 */
 	public function offsetSet($offset, $value)
 	{
 		$this->factories[$offset] = $value;
+
+		return $this;
 	}
 
 	/**
-	 * Unsets an application parameter or an object
+	 * Implements the \ArrayAccess
 	 *
-	 * @param  string $offset
+	 * @param string $offset
+	 *
+	 * @return $this
 	 */
 	public function offsetUnset($offset)
 	{
 		unset($this->factories[$offset]);
+
+		return $this;
 	}
 }

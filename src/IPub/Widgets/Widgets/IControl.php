@@ -5,31 +5,21 @@
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	Widgets
  * @since		5.0
  *
  * @date		15.09.14
  */
 
-namespace IPub\WidgetsManager\Widgets;
+namespace IPub\Widgets\Widgets;
 
 use IPub;
-use IPub\WidgetsManager;
-use IPub\WidgetsManager\Entities;
+use IPub\Widgets;
+use IPub\Widgets\Entities;
 
-interface IWidget
+interface IControl
 {
-	/**
-	 * Define widget type
-	 */
-	const WIDGET_TYPE = 'widget.notDefined';
-
-	/**
-	 * Define template files
-	 */
-	const TEMPLATE_DEFAULT	= 'default';	// Default widget template
-
 	/**
 	 * Set widget display data
 	 *

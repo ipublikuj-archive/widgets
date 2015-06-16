@@ -5,14 +5,14 @@
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	Entities
  * @since		5.0
  *
  * @date		15.09.14
  */
 
-namespace IPub\WidgetsManager\Entities;
+namespace IPub\Widgets\Entities;
 
 interface IData
 {

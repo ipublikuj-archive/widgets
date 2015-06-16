@@ -5,14 +5,14 @@
  * @copyright	Vice v copyright.php
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	Components
  * @since		5.0
  *
  * @date		24.07.13
  */
 
-namespace IPub\WidgetsManager\Components;
+namespace IPub\Widgets\Components;
 
 use Nette;
 use Nette\Application;
@@ -20,6 +20,8 @@ use Nette\ComponentModel;
 
 class WidgetManager extends Application\UI\Control
 {
+	const CLASSNAME = __CLASS__;
+
 	/**
 	 * @var array
 	 */

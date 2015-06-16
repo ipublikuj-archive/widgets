@@ -5,14 +5,14 @@
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	Providers
  * @since		5.0
  *
  * @date		17.09.14
  */
 
-namespace IPub\WidgetsManager\Providers;
+namespace IPub\Widgets\Providers;
 
 interface ITemplateProvider
 {
@@ -21,12 +21,12 @@ interface ITemplateProvider
 	 *
 	 * @return string
 	 */
-	public function getWidgetTemplatePath();
+	public function getTemplatePath();
 
 	/**
 	 * Provide widget decorator template path
 	 *
 	 * @return string
 	 */
-	public function getWidgetDecoratorTemplatePath();
+	public function getDecoratorTemplatePath();
 }

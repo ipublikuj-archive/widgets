@@ -5,14 +5,14 @@
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	Widgets
  * @since		5.0
  *
  * @date		15.09.14
  */
 
-namespace IPub\WidgetsManager\Widgets;
+namespace IPub\Widgets\Widgets;
 
 use Nette;
 use Nette\Application;
@@ -22,16 +22,18 @@ use Nette\Security;
 use Nette\Utils;
 
 use IPub;
-use IPub\WidgetsManager;
-use IPub\WidgetsManager\Decorators;
-use IPub\WidgetsManager\Entities;
+use IPub\Widgets;
+use IPub\Widgets\Decorators;
+use IPub\Widgets\Entities;
 
-abstract class Widget extends Application\UI\Control implements IWidget
+abstract class Control extends Application\UI\Control implements IControl
 {
+	const CLASSNAME = __CLASS__;
+
 	/**
-	 * @var WidgetsManager\WidgetsProvider
+	 * @var Widgets\WidgetsManager
 	 */
-	protected $widgetsProvider;
+	protected $widgetsManager;
 
 	/**
 	 * @var Security\User
@@ -59,36 +61,29 @@ abstract class Widget extends Application\UI\Control implements IWidget
 	protected $templateFactory;
 
 	/**
-	 * @var WidgetsManager\Providers\ITemplateProvider
-	 */
-	protected $templateProvider;
-
-	/**
 	 * @var Application\UI\ITemplate
 	 */
 	protected $template;
 
 	/**
-	 * @param WidgetsManager\WidgetsProvider $widgetsProvider
+	 * @param Widgets\WidgetsManager $widgetsManager
 	 * @param Security\User $user
 	 * @param Application\UI\ITemplateFactory $templateFactory
-	 * @param WidgetsManager\Providers\ITemplateProvider $templateProvider
 	 * @param Localization\ITranslator $translator
 	 * @param ComponentModel\IContainer $parent
 	 * @param string $name
 	 */
 	public function __construct(
-		WidgetsManager\WidgetsProvider $widgetsProvider,
+		Widgets\WidgetsManager $widgetsManager,
 		Security\User $user,
 		Application\UI\ITemplateFactory $templateFactory,
-		WidgetsManager\Providers\ITemplateProvider $templateProvider = NULL,
 		Localization\ITranslator $translator = NULL,
 		ComponentModel\IContainer $parent = NULL, $name = NULL
 	) {
 		parent::__construct($parent, $name);
 
 		// Widgets provider service
-		$this->widgetsProvider = $widgetsProvider;
+		$this->widgetsManager = $widgetsManager;
 
 		// Application user
 		$this->user = $user;
@@ -98,8 +93,6 @@ abstract class Widget extends Application\UI\Control implements IWidget
 
 		// Application template factory
 		$this->templateFactory	= $templateFactory;
-		// Application template path provider
-		$this->templateProvider	= $templateProvider;
 		// Create widget template
 		$this->template			= $this->templateFactory->createTemplate($this);
 	}
@@ -121,7 +114,7 @@ abstract class Widget extends Application\UI\Control implements IWidget
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		return $this->data->getName();
@@ -134,7 +127,7 @@ abstract class Widget extends Application\UI\Control implements IWidget
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		return $this->data->getDescription();
@@ -147,7 +140,7 @@ abstract class Widget extends Application\UI\Control implements IWidget
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		return $this->data->getPriority();
@@ -160,7 +153,7 @@ abstract class Widget extends Application\UI\Control implements IWidget
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		return $this->data->getPosition();
@@ -180,7 +173,7 @@ abstract class Widget extends Application\UI\Control implements IWidget
 
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		// Process actions before render
@@ -272,16 +265,16 @@ abstract class Widget extends Application\UI\Control implements IWidget
 		switch ($style)
 		{
 			case 'raw':
-				$this->decorator = $this->widgetsProvider->getDecorator('raw');
+				//$this->decorator = $this->widgetsManager->getDecorator('raw');
 				break;
 
 			case 'line':
-				$this->decorator = $this->widgetsProvider->getDecorator('line');
+				//$this->decorator = $this->widgetsManager->getDecorator('line');
 				break;
 
 			case 'default':
 			default:
-				$this->decorator = $this->widgetsProvider->getDecorator('panel');
+				//$this->decorator = $this->widgetsManager->getDecorator('default');
 				break;
 		}
 

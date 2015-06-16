@@ -1,21 +1,23 @@
 <?php
 /**
- * FilterManager.php
+ * FiltersManager.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	common
  * @since		5.0
  *
  * @date		16.09.14
  */
 
-namespace IPub\WidgetsManager;
+namespace IPub\Widgets;
 
-class FilterManager implements \IteratorAggregate
+class FiltersManager implements \IteratorAggregate
 {
+	const CLASSNAME = __CLASS__;
+
 	/**
 	 * @var string[]
 	 */
@@ -34,7 +36,7 @@ class FilterManager implements \IteratorAggregate
 	}
 
 	/**
-	 * Returns a registered filter class.
+	 * Returns a registered filter class
 	 *
 	 * @param string $name
 	 *
@@ -46,7 +48,7 @@ class FilterManager implements \IteratorAggregate
 	}
 
 	/**
-	 * Register a filter class name.
+	 * Register a filter class name
 	 *
 	 * @param string $name
 	 * @param string $filter
@@ -56,8 +58,8 @@ class FilterManager implements \IteratorAggregate
 	 */
 	public function register($name, $filter, $priority = 0)
 	{
-		if (!is_string($filter) || !is_subclass_of($filter, 'IPub\WidgetsManager\Filters\FilterIterator')) {
-			throw new \InvalidArgumentException(sprintf('Given filter "%s" is not of type IPub\WidgetsManager\Filters\FilterIterator', (string) $filter));
+		if (!is_string($filter) || !is_subclass_of($filter, 'IPub\Widgets\Filters\FilterIterator')) {
+			throw new \InvalidArgumentException(sprintf('Given filter "%s" is not of type IPub\Widgets\Filters\FilterIterator', (string) $filter));
 		}
 
 		$this->unregister($name);

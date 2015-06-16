@@ -5,14 +5,14 @@
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:WidgetsManager!
+ * @package		iPublikuj:Widgets!
  * @subpackage	Filters
  * @since		5.0
  *
  * @date		16.09.14
  */
 
-namespace IPub\WidgetsManager\Filters;
+namespace IPub\Widgets\Filters;
 
 use Nette;
 use Nette\Application;
