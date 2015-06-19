@@ -14,12 +14,15 @@
 
 namespace IPub\Widgets;
 
+use IPub;
+use IPub\Widgets\Decorators;
+
 class DecoratorsManager implements \IteratorAggregate
 {
 	const CLASSNAME = __CLASS__;
 
 	/**
-	 * @var string[]
+	 * @var Decorators\IFactory[]
 	 */
 	protected $decorators = [];
 
@@ -40,44 +43,48 @@ class DecoratorsManager implements \IteratorAggregate
 	 *
 	 * @param string $name
 	 *
-	 * @return string
+	 * @return Decorators\IFactory|null
 	 */
 	public function get($name)
 	{
-		return $this->has($name) ? $this->decorators[$name] : null;
+		return $this->has($name) ? $this->decorators[$name] : NULL;
 	}
 
 	/**
-	 * Register a decorator class name
+	 * Register a decorator component factory
 	 *
-	 * @param string $name
-	 * @param string $decorator
+	 * @param Decorators\IFactory $decorator
 	 *
-	 * @throws \InvalidArgumentException
+	 * @return $this
 	 */
-	public function register($name, $decorator)
+	public function register(Decorators\IFactory $decorator)
 	{
-		if (!is_string($decorator) || !is_subclass_of($decorator, 'IPub\Widgets\Decorators\DecoratorIterator')) {
-			throw new \InvalidArgumentException(sprintf('Given decorator "%s" is not of type IPub\Widgets\Decorators\DecoratorIterator', (string) $decorator));
-		}
+		// Get widget type
+		$name = $decorator::DECORATOR_NAME;
 
 		$this->unregister($name);
 
 		$this->decorators[$name] = $decorator;
 
 		krsort($this->decorators);
+
+		return $this;
 	}
 
 	/**
-	 * Unregisters a decorator
+	 * Un-registers a decorator
 	 *
 	 * @param string $name
+	 *
+	 * @return $this
 	 */
 	public function unregister($name)
 	{
 		if (array_key_exists($name, $this->decorators)) {
 			unset($this->decorators[$name]);
 		}
+
+		return $this;
 	}
 
 	/**

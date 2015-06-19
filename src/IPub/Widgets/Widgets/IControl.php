@@ -46,22 +46,4 @@ interface IControl
 	 * @throws \LogicException
 	 */
 	public function getDescription();
-
-	/**
-	 * Get current widget position name
-	 *
-	 * @return string
-	 *
-	 * @throws \LogicException
-	 */
-	public function getPosition();
-
-	/**
-	 * Get current widget priority
-	 *
-	 * @return int
-	 *
-	 * @throws \LogicException
-	 */
-	public function getPriority();
 }

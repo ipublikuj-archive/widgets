@@ -1,6 +1,6 @@
 <?php
 /**
- * IWidgetManager.php
+ * IControl.php
  *
  * @copyright	Vice v copyright.php
  * @license		http://www.ipublikuj.eu
@@ -14,10 +14,14 @@
 
 namespace IPub\Widgets\Components;
 
-interface IWidgetManager
+interface IControl
 {
+	const CLASSNAME = __CLASS__;
+
 	/**
-	 * @return WidgetManager
+	 * @param string $position
+	 *
+	 * @return Control
 	 */
-	function create();
+	function create($position);
 }

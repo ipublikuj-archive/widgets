@@ -31,70 +31,22 @@ abstract class Control extends Application\UI\Control implements IControl
 	const CLASSNAME = __CLASS__;
 
 	/**
-	 * @var Widgets\WidgetsManager
-	 */
-	protected $widgetsManager;
-
-	/**
-	 * @var Security\User
-	 */
-	protected $user;
-
-	/**
-	 * @var Localization\ITranslator
-	 */
-	protected $translator;
-
-	/**
 	 * @var Entities\IData
 	 */
 	protected $data;
 
 	/**
-	 * @var Decorators\IDecorator
-	 */
-	protected $decorator;
-
-	/**
-	 * @var Application\UI\ITemplateFactory
-	 */
-	protected $templateFactory;
-
-	/**
-	 * @var Application\UI\ITemplate
-	 */
-	protected $template;
-
-	/**
-	 * @param Widgets\WidgetsManager $widgetsManager
-	 * @param Security\User $user
-	 * @param Application\UI\ITemplateFactory $templateFactory
-	 * @param Localization\ITranslator $translator
+	 * @param Entities\IData $data
 	 * @param ComponentModel\IContainer $parent
 	 * @param string $name
 	 */
 	public function __construct(
-		Widgets\WidgetsManager $widgetsManager,
-		Security\User $user,
-		Application\UI\ITemplateFactory $templateFactory,
-		Localization\ITranslator $translator = NULL,
+		Entities\IData $data,
 		ComponentModel\IContainer $parent = NULL, $name = NULL
 	) {
 		parent::__construct($parent, $name);
 
-		// Widgets provider service
-		$this->widgetsManager = $widgetsManager;
-
-		// Application user
-		$this->user = $user;
-
-		// Application translator
-		$this->translator = $translator;
-
-		// Application template factory
-		$this->templateFactory	= $templateFactory;
-		// Create widget template
-		$this->template			= $this->templateFactory->createTemplate($this);
+		$this->data = $data;
 	}
 
 	/**
@@ -133,62 +85,12 @@ abstract class Control extends Application\UI\Control implements IControl
 		return $this->data->getDescription();
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getPriority()
+	public function render()
 	{
-		// Widget data must be loaded
-		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
-		}
-
-		return $this->data->getPriority();
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getPosition()
-	{
-		// Widget data must be loaded
-		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
-		}
-
-		return $this->data->getPosition();
-	}
-
-	/**
-	 * @return mixed
-	 *
-	 * @param mixed $data
-	 *
-	 * @throws \LogicException
-	 */
-	public function render($data = NULL)
-	{
-		// Check if data are provided during rendering
-		$this->data = $data != NULL ? $this->createData($data) : $this->data;
-
-		// Widget data must be loaded
-		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
-		}
-
 		// Process actions before render
 		$this->beforeRender();
 
-		// Render widget
-		ob_start();
 		$this->template->render();
-		$widget = ob_get_clean();
-
-		// Empty current widget data
-		$this->data = NULL;
-
-		// Return rendered widget
-		return $widget;
 	}
 
 	/**
@@ -248,36 +150,6 @@ abstract class Control extends Application\UI\Control implements IControl
 				->render();
 		}
 
-		// Check in wich position is this widget displayed...
-		if (in_array($this->getPosition(), array('absolute', 'breadcrumbs', 'logo', 'banner', 'search'))) {
-			// ... and if the position is special, override decorator style
-			$style = 'raw';
-			// ... and disable display name
-			$this->data->setParam('widget.title.insert', FALSE);
-		}
-
-		// Overide decorator for specified widget position
-		if ($this->getPosition() == 'menu') {
-			$style = $style == 'menu' ? 'raw' : 'dropdown';
-		}
-
-		// Set widget template using the style
-		switch ($style)
-		{
-			case 'raw':
-				//$this->decorator = $this->widgetsManager->getDecorator('raw');
-				break;
-
-			case 'line':
-				//$this->decorator = $this->widgetsManager->getDecorator('line');
-				break;
-
-			case 'default':
-			default:
-				//$this->decorator = $this->widgetsManager->getDecorator('default');
-				break;
-		}
-
 		// Assign basic widget data to template
 		$this->template->badge	= $badge;
 		$this->template->icon	= $icon;
@@ -286,28 +158,6 @@ abstract class Control extends Application\UI\Control implements IControl
 			'insert'	=> $this->data->getParam('widget.title.insert', TRUE),
 			'hidden'	=> $this->data->getParam('widget.title.hidden', FALSE)
 		];
-	}
-
-	/**
-	 * Convert data to object
-	 *
-	 * @param mixed $data
-	 *
-	 * @return Entities\Data|null
-	 */
-	protected function createData($data)
-	{
-		// Data are in required object
-		if ($data instanceof Entities\IData) {
-			return $data;
-
-		// or data are in array
-		} else if (is_array($data)) {
-			// Create new data object
-			return (new Entities\Data($data));
-		}
-
-		return NULL;
 	}
 
 	/**

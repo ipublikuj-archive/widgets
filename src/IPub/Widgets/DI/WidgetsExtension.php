@@ -21,8 +21,9 @@ use Nette\PhpGenerator as Code;
 
 use IPub;
 use IPub\Widgets;
+use IPub\Widgets\Components;
+use IPub\Widgets\Decorators;
 use IPub\Widgets\Exceptions;
-use IPub\Widgets\Filters;
 use IPub\Widgets\Loaders;
 use IPub\Widgets\Repository;
 
@@ -30,6 +31,8 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 {
 	// Define tag string for widgets
 	const TAG_WIDGET = 'ipub.widgets.widget';
+	// Define tag string for widgets decorators
+	const TAG_DECORATOR = 'ipub.widgets.decorator';
 
 	/**
 	 * Extension default configuration
@@ -58,24 +61,18 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 		$installer	= new Widgets\Installers\WidgetsInstaller($loader, $repository);
 
 		/**
-		 * Register services
+		 * Widgets services
 		 */
-		$widgetsManager = $builder->addDefinition($this->prefix('manager'))
+
+		// Widgets manager
+		$widgetsManager = $builder->addDefinition($this->prefix('widgets.manager'))
 			->setClass(Widgets\WidgetsManager::CLASSNAME, [
 				'repository'	=> $repository,
 				'installer'		=> $installer
 			])
 			->addTag('cms.widgets');
 
-		// Widgets filter manager
-		$widgetsFilter = $builder->addDefinition($this->prefix('filter'))
-			->setClass(Widgets\FiltersManager::CLASSNAME);
-
-		// Register widgets filters
-		$widgetsFilter->addSetup('register', ['access', Filters\AccessFilter::CLASSNAME, 16]);
-		$widgetsFilter->addSetup('register', ['priority', Filters\PriorityFilter::CLASSNAME]);
-
-		// Register widgets
+		// Register widgets extensions
 		foreach($repository->getPackages() as $packageEntity) {
 			// Store info about widget root folder
 			$packageEntity->setPath($repository->getPath() .'/'. $packageEntity->getName());
@@ -89,11 +86,11 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 			}
 
 			// Try to find widget definition file
-			if (!file_exists($packageEntity->getPath() .'/widget.neon')) {
+			if (!file_exists($packageEntity->getPath() . DIRECTORY_SEPARATOR .'widget.neon')) {
 				throw new Exceptions\WidgetLoadException(sprintf('Widget definition does not exist (%s).', $packageEntity->getPath()));
 			}
 
-			$definition = (!($definition = $this->loadFromFile($packageEntity->getPath() .'/widget.neon')) || 1 === $definition) ? [] : $definition;
+			$definition = (!($definition = $this->loadFromFile($packageEntity->getPath() . DIRECTORY_SEPARATOR .'widget.neon')) || 1 === $definition) ? [] : $definition;
 			// Get extension class name for widget
 			$class = isset($definition['extension']) ? $definition['extension'] : 'IPub\Widgets\WidgetExtension';
 
@@ -103,6 +100,29 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 			// Assign widget package to manager
 			$widgetsManager->addSetup('addPackage', [$packageEntity]);
 		}
+
+		$builder->addDefinition($this->prefix('widgets.component'))
+			->setClass(Components\Control::CLASSNAME)
+			->setImplement(Components\IControl::CLASSNAME)
+			->setInject(TRUE)
+			->addTag('cms.widgets');
+
+		/**
+		 * Widgets decorators
+		 */
+
+		// Widgets decorators manager
+		$builder->addDefinition($this->prefix('decorators.manager'))
+			->setClass(Widgets\DecoratorsManager::CLASSNAME)
+			->addTag('cms.widgets');
+
+		// Widgets raw decorator
+		$builder->addDefinition($this->prefix('decorator.raw'))
+			->setClass(Decorators\Raw\Control::CLASSNAME)
+			->setImplement(Decorators\Raw\IControl::CLASSNAME)
+			->setInject(TRUE)
+			->addTag('cms.widgets')
+			->addTag(self::TAG_DECORATOR);
 	}
 
 	public function beforeCompile()
@@ -110,14 +130,27 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 		// Get container builder
 		$builder = $this->getContainerBuilder();
 
-		// Get widget provider
-		$manager = $builder->getDefinition($this->prefix('manager'));
+		// Get widgets manager
+		$service = $builder->getDefinition($this->prefix('widgets.manager'));
 
 		// Get all registered widgets components
 		foreach (array_keys($builder->findByTag(self::TAG_WIDGET)) as $serviceName) {
-			// Register widget to provider
-			$manager->addSetup('register', ['@' .$serviceName]);
+			// Register widget to manager
+			$service->addSetup('register', ['@' .$serviceName]);
 		}
+
+		// Get widgets manager
+		$service = $builder->getDefinition($this->prefix('decorators.manager'));
+
+		// Get all registered widgets decorators
+		foreach (array_keys($builder->findByTag(self::TAG_DECORATOR)) as $serviceName) {
+			// Register decorator to manager
+			$service->addSetup('register', ['@' .$serviceName]);
+		}
+
+		// Install extension latte macros
+		$latteFactory = $builder->getDefinition($builder->getByType('\Nette\Bridges\ApplicationLatte\ILatteFactory') ?: 'nette.latteFactory');
+		$latteFactory->addSetup('IPub\Widgets\Latte\Macros::install(?->getCompiler())', ['@self']);
 	}
 
 	/**

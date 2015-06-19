@@ -1,6 +1,6 @@
 <?php
 /**
- * Decorator.php
+ * IFactory.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
@@ -9,12 +9,15 @@
  * @subpackage	Decorators
  * @since		5.0
  *
- * @date		16.09.14
+ * @date		18.06.15
  */
 
 namespace IPub\Widgets\Decorators;
 
-abstract class Decorator implements IDecorator
+interface IFactory
 {
-
+	/**
+	 * @return null
+	 */
+	public function create();
 }

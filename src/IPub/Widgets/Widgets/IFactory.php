@@ -14,7 +14,15 @@
 
 namespace IPub\Widgets\Widgets;
 
+use IPub;
+use IPub\Widgets\Entities;
+
 interface IFactory
 {
-
+	/**
+	 * @param Entities\IData $data
+	 *
+	 * @return null
+	 */
+	public function create(Entities\IData $data);
 }

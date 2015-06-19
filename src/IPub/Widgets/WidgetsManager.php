@@ -28,64 +28,19 @@ class WidgetsManager extends Packages\PackagesManager
 	const CLASSNAME = __CLASS__;
 
 	/**
-	 * @var Widgets\IWidget[]
+	 * @var Widgets\IFactory[]
 	 */
 	protected $widgets = [];
 
 	/**
-	 * @var Application\UI\Presenter
-	 */
-	protected $presenter;
-
-	/**
-	 * @var Security\User
-	 */
-	protected $user;
-
-	/**
-	 * @var Widgets\IFactory[]
-	 */
-	protected $factories = [];
-
-	/**
-	 * @var FiltersManager
-	 */
-	protected $filters;
-
-	/**
-	 * @var DecoratorsManager
-	 */
-	protected $decorators;
-
-	/**
 	 * @param Packages\Repository\IInstalledRepository $repository
 	 * @param Packages\Installers\IInstaller $installer
-	 * @param Application\Application $application
-	 * @param Security\User $user
-	 * @param FiltersManager $filters
-	 * @param DecoratorsManager $decorators
 	 */
 	public function __construct(
 		Packages\Repository\IInstalledRepository $repository,
-		Packages\Installers\IInstaller $installer,
-		Application\Application $application,
-		Security\User $user,
-		FiltersManager $filters = NULL,
-		DecoratorsManager $decorators = NULL
+		Packages\Installers\IInstaller $installer
 	) {
 		parent::__construct($repository, $installer);
-
-		// Register filters
-		$this->filters = $filters ?: new FiltersManager;
-
-		// Application actual presenter
-		$this->presenter = $application->getPresenter();
-
-		// Application user
-		$this->user = $user;
-
-		// Add application to filter iterator
-		Filters\FilterIterator::setApplication($application);
 	}
 
 	/**
@@ -97,7 +52,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 */
 	public function has($type)
 	{
-		return isset($this->factories[(string) $type]);
+		return isset($this->widgets[(string) $type]);
 	}
 
 	/**
@@ -105,7 +60,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 *
 	 * @param  string $type
 	 *
-	 * @return Widgets\IControl|NULL
+	 * @return Widgets\IFactory|NULL
 	 */
 	public function get($type)
 	{
@@ -114,7 +69,7 @@ class WidgetsManager extends Packages\PackagesManager
 
 		// Check if widget exists or not...
 		if ($this->has($type)) {
-			return $this->factories[$type]->create();
+			return $this->widgets[$type];
 		}
 
 		return NULL;
@@ -138,30 +93,10 @@ class WidgetsManager extends Packages\PackagesManager
 
 		// If not, register new widget
 		} else {
-			$this->factories[$type] = $factory;
+			$this->widgets[$type] = $factory;
 		}
 
 		return $this;
-	}
-
-	/**
-	 * Get widgets filter manager
-	 *
-	 * @return FiltersManager
-	 */
-	public function getFiltersManager()
-	{
-		return $this->filters;
-	}
-
-	/**
-	 * Get widgets decorators manager
-	 *
-	 * @return DecoratorsManager
-	 */
-	public function getDecoratorManager()
-	{
-		return $this->decorators;
 	}
 
 	/**
@@ -171,7 +106,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 */
 	public function getIterator()
 	{
-		return new \ArrayIterator($this->factories);
+		return new \ArrayIterator($this->widgets);
 	}
 
 	/**
@@ -183,7 +118,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 */
 	public function offsetExists($offset)
 	{
-		return isset($this->factories[$offset]);
+		return isset($this->widgets[$offset]);
 	}
 
 	/**
@@ -195,7 +130,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 */
 	public function offsetGet($offset)
 	{
-		return $this->factories[$offset];
+		return $this->widgets[$offset];
 	}
 
 	/**
@@ -208,7 +143,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 */
 	public function offsetSet($offset, $value)
 	{
-		$this->factories[$offset] = $value;
+		$this->widgets[$offset] = $value;
 
 		return $this;
 	}
@@ -222,7 +157,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->factories[$offset]);
+		unset($this->widgets[$offset]);
 
 		return $this;
 	}
