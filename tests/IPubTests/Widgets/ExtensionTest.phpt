@@ -39,7 +39,7 @@ class ExtensionTest extends Tester\TestCase
 
 		$config->addConfig(__DIR__ . '/files/config.neon', $config::NONE);
 
-		// Define variables
+		// Define config variables
 		$config->addParameters([
 			'appDir' => __DIR__,
 		]);
