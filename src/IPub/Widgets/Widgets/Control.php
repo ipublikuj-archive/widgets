@@ -26,6 +26,14 @@ use IPub\Widgets\Decorators;
 use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
 
+/**
+ * Widgets control definition
+ *
+ * @package		iPublikuj:Widgets!
+ * @subpackage	Widgets
+ *
+ * @property-read Application\UI\ITemplate $template
+ */
 abstract class Control extends Application\UI\Control implements IControl
 {
 	const CLASSNAME = __CLASS__;

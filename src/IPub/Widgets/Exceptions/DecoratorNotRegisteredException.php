@@ -1,6 +1,6 @@
 <?php
 /**
- * WidgetNotRegisteredException.php
+ * DecoratorNotRegisteredException.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
@@ -9,9 +9,9 @@
  * @subpackage	Exceptions
  * @since		5.0
  *
- * @date		19.06.15
+ * @date		20.06.15
  */
 
 namespace IPub\Widgets\Exceptions;
 
-class WidgetNotRegisteredException extends InvalidStateException {}
+class DecoratorNotRegisteredException extends InvalidStateException {}

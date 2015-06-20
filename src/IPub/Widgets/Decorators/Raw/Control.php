@@ -23,6 +23,14 @@ use IPub\Widgets;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Exceptions;
 
+/**
+ * Widgets decorator control definition
+ *
+ * @package		iPublikuj:Widgets!
+ * @subpackage	Decorators
+ *
+ * @property-read Application\UI\ITemplate $template
+ */
 class Control extends Application\UI\Control implements Decorators\IDecorator
 {
 	const CLASSNAME = __CLASS__;

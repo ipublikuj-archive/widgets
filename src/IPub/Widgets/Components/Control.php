@@ -30,7 +30,14 @@ use IPub\Widgets\WidgetsManager;
 use IPub\Widgets\DecoratorsManager;
 
 /**
+ * Widgets container control definition
+ *
+ * @package		iPublikuj:Widgets!
+ * @subpackage	Components
+ *
  * @method onAttached(Nette\Application\UI\Control $component)
+ *
+ * @property-read Application\UI\ITemplate $template
  */
 class Control extends Application\UI\Control
 {
@@ -305,9 +312,14 @@ class Control extends Application\UI\Control
 	{
 		if (Utils\Strings::startsWith($name, 'render')) {
 			// Get component name
-			if ($decorator = Utils\Strings::capitalize(Utils\Strings::substring($name, 6))) {
+			if ($decoratorName = Utils\Strings::capitalize(Utils\Strings::substring($name, 6))) {
 				// Set template name
-				//$this->setDecorator($this->decoratorsManager->get($decorator));
+				if ($factory = $this->decoratorsManager->get($decoratorName)) {
+					$this->setDecorator($factory);
+
+				} else {
+					throw new Exceptions\DecoratorNotRegisteredException(sprintf('Widgets decorator: "%s" is not registered.', $decoratorName));
+				}
 			}
 
 			// Call component rendering
