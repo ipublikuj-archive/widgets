@@ -77,8 +77,9 @@ class Widget extends Packages\Entities\Package implements IWidget
 				$last = array_pop($keys);
 
 				foreach ($keys as $key) {
-					if (!isset($val[$key]) || !is_array($val[$key]))
-						$val[$key] = [];
+					if (!isset($val[$key]) || !is_array($val[$key])) {
+											$val[$key] = [];
+					}
 
 					$val = &$val[$key];
 				}
