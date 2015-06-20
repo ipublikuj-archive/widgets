@@ -147,10 +147,6 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 			// Register decorator to manager
 			$service->addSetup('register', ['@' .$serviceName]);
 		}
-
-		// Install extension latte macros
-		$latteFactory = $builder->getDefinition($builder->getByType('\Nette\Bridges\ApplicationLatte\ILatteFactory') ?: 'nette.latteFactory');
-		$latteFactory->addSetup('IPub\Widgets\Latte\Macros::install(?->getCompiler())', ['@self']);
 	}
 
 	/**

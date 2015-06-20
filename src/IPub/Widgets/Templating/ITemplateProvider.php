@@ -29,4 +29,11 @@ interface ITemplateProvider
 	 * @return string
 	 */
 	public function getDecoratorTemplatePath();
+
+	/**
+	 * Provide widget container template path
+	 *
+	 * @return string
+	 */
+	public function getContainerTemplatePath();
 }

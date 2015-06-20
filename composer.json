@@ -1,9 +1,9 @@
 {
-	"name"			: "ipub/widgets-manger",
+	"name"			: "ipub/widgets",
 	"type"			: "library",
-	"description"	: "Widgets manager for Nette Framework",
+	"description"	: "Extension for Nette Framework to manage page dynamical component alias widgets.",
 	"keywords"		: ["nette", "widgets", "tools", "components", "ipub", "ipublikuj"],
-	"homepage"		: "https://github.com/iPublikuj/WidgetsManager",
+	"homepage"		: "https://github.com/iPublikuj/widgets",
 	"license"		: ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
 
 	"authors": [
@@ -16,15 +16,18 @@
 
 	"support": {
 		"email"		:"support@ipublikuj.eu",
-		"issues"	:"https://github.com/iPublikuj/WidgetsManager/issues"
+		"issues"	:"https://github.com/iPublikuj/widgets/issues"
 	},
 
 	"require": {
 		"php"				: ">=5.3.2",
+
 		"nette/application"	: "~2.2",
 		"nette/di"			: "~2.2",
 		"nette/utils"		: "~2.2",
-		"latte/latte"		: "~2.2"
+		"latte/latte"		: "~2.2",
+
+		"ipub/packages"		: "^1.0.0"
 	},
 
 	"require-dev": {
@@ -34,7 +37,7 @@
 
 	"autoload": {
 		"psr-0": {
-			"IPub\\WidgetsManager\\": "src/"
+			"IPub\\Widgets\\": "src/"
 		}
 	}
 }

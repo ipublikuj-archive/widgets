@@ -18,22 +18,40 @@ use Nette;
 use Nette\Application;
 use Nette\ComponentModel;
 use Nette\Localization;
-use Nette\Security;
 use Nette\Utils;
 
 use IPub;
 use IPub\Widgets;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Entities;
+use IPub\Widgets\Exceptions;
 
 abstract class Control extends Application\UI\Control implements IControl
 {
 	const CLASSNAME = __CLASS__;
 
 	/**
+	 * @var string
+	 */
+	protected $templatePath;
+
+	/**
 	 * @var Entities\IData
 	 */
 	protected $data;
+
+	/**
+	 * @var Localization\ITranslator
+	 */
+	protected $translator;
+
+	/**
+	 * @param Localization\ITranslator $translator
+	 */
+	public function injectTranslator(Localization\ITranslator $translator = NULL)
+	{
+		$this->translator = $translator;
+	}
 
 	/**
 	 * @param Entities\IData $data
@@ -44,7 +62,8 @@ abstract class Control extends Application\UI\Control implements IControl
 		Entities\IData $data,
 		ComponentModel\IContainer $parent = NULL, $name = NULL
 	) {
-		parent::__construct($parent, $name);
+		// TODO: remove, only for tests
+		parent::__construct(NULL, NULL);
 
 		$this->data = $data;
 	}
@@ -85,12 +104,60 @@ abstract class Control extends Application\UI\Control implements IControl
 		return $this->data->getDescription();
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getPriority()
+	{
+		// Widget data must be loaded
+		if (!$this->data instanceof Entities\IData) {
+			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+		}
+
+		return $this->data->getPriority();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getPosition()
+	{
+		// Widget data must be loaded
+		if (!$this->data instanceof Entities\IData) {
+			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+		}
+
+		return $this->data->getPosition();
+	}
+
+	/**
+	 * Render widget
+	 */
 	public function render()
 	{
-		// Process actions before render
-		$this->beforeRender();
+		// Check if control has template
+		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
+			// Check if translator is available
+			if ($this->getTranslator() instanceof Localization\ITranslator) {
+				$this->template->setTranslator($this->getTranslator());
+			}
 
-		$this->template->render();
+			// If template was not defined before...
+			if ($this->template->getFile() === NULL) {
+				// ...try to get base component template file
+				$templatePath = !empty($this->templatePath) ? $this->templatePath : __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
+				$this->template->setFile($templatePath);
+			}
+
+			// Process actions before render
+			$this->beforeRender();
+
+			// Render component template
+			$this->template->render();
+
+		} else {
+			throw new Exceptions\InvalidStateException('Widgets container control is without template.');
+		}
 	}
 
 	/**
@@ -98,20 +165,14 @@ abstract class Control extends Application\UI\Control implements IControl
 	 */
 	protected function beforeRender()
 	{
-		// Get widget decorator style
-		$style	= $this->data->getStyle();
-		// Get widget badge
-		$badge	= $this->data->getBadge();
-		// Get widget icon
-		$icon	= $this->data->getIcon();
 		// Get widget title
-		$name	= $this->data->getName();
+		$name = $this->data->getName();
 
 		// If widget name has space...
 		$pos = mb_strpos($this->data->getName(), ' ');
 		if ($pos !== FALSE && mb_strpos($this->data->getName(), '||') === FALSE) {
-			$name = Utils\Html::el("span")
-				->addAttributes(array('class' => 'color'))
+			$name = Utils\Html::el('span')
+				->addAttributes(['class' => 'color'])
 				->setText(mb_substr($this->data->getName(), 0, $pos))
 				->render();
 
@@ -122,13 +183,13 @@ abstract class Control extends Application\UI\Control implements IControl
 		// If widget name has subtitle...
 		$pos = mb_strpos($this->data->getName(), '||');
 		if ($pos !== FALSE) {
-			$title = Utils\Html::el("span")
-				->addAttributes(array('class' => 'title'))
+			$title = Utils\Html::el('span')
+				->addAttributes(['class' => 'title'])
 				->setText(mb_substr($this->data->getName(), 0, $pos))
 				->render();
 
-			$subtitle = Utils\Html::el("span")
-				->addAttributes(array('class' => 'subtitle'))
+			$subtitle = Utils\Html::el('span')
+				->addAttributes(['class' => 'subtitle'])
 				->setText(mb_substr($this->data->getName(), $pos + 2))
 				->render();
 
@@ -137,16 +198,16 @@ abstract class Control extends Application\UI\Control implements IControl
 		}
 
 		// Set badge if exists
-		if ($badge) {
-			$badge = Utils\Html::el("span")
-				->addAttributes(array('class' => 'badge badge-'. $badge))
+		if ($badge = $this->data->getBadge()) {
+			$badge = Utils\Html::el('span')
+				->addAttributes(['class' => 'badge badge-'. $badge])
 				->render();
 		}
 
 		// Set icon if exists
-		if ($icon) {
-			$icon = Utils\Html::el("span")
-				->addAttributes(array('class' => 'icon icon-'. $icon))
+		if ($icon = $this->data->getIcon()) {
+			$icon = Utils\Html::el('span')
+				->addAttributes(['class' => 'icon icon-'. $icon])
 				->render();
 		}
 
@@ -158,6 +219,61 @@ abstract class Control extends Application\UI\Control implements IControl
 			'insert'	=> $this->data->getParam('widget.title.insert', TRUE),
 			'hidden'	=> $this->data->getParam('widget.title.hidden', FALSE)
 		];
+	}
+
+	/**
+	 * Change default control template path
+	 *
+	 * @param string $templatePath
+	 *
+	 * @return $this
+	 *
+	 * @throws Exceptions\FileNotFoundException
+	 */
+	public function setTemplateFile($templatePath)
+	{
+		// Check if template file exists...
+		if (!is_file($templatePath)) {
+			// Remove extension
+			$template = basename($templatePath, '.latte');
+
+			// ...check if extension template is used
+			if (is_file(__DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte')) {
+				$templatePath = __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte';
+
+			} else {
+				// ...if not throw exception
+				throw new Exceptions\FileNotFoundException(sprintf('Template file "%s" was not found.', $templatePath));
+			}
+		}
+
+		$this->templatePath = $templatePath;
+
+		return $this;
+	}
+
+	/**
+	 * @param Localization\ITranslator $translator
+	 *
+	 * @return $this
+	 */
+	public function setTranslator(Localization\ITranslator $translator)
+	{
+		$this->translator = $translator;
+
+		return $this;
+	}
+
+	/**
+	 * @return Localization\ITranslator|null
+	 */
+	public function getTranslator()
+	{
+		if ($this->translator instanceof Localization\ITranslator) {
+			return $this->translator;
+		}
+
+		return NULL;
 	}
 
 	/**

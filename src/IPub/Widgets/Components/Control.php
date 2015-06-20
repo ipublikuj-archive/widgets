@@ -17,6 +17,7 @@ namespace IPub\Widgets\Components;
 use Nette;
 use Nette\Application;
 use Nette\ComponentModel;
+use Nette\Localization;
 use Nette\Utils;
 
 use IPub;
@@ -41,6 +42,11 @@ class Control extends Application\UI\Control
 	public $onAttached = [];
 
 	/**
+	 * @var string
+	 */
+	protected $templatePath;
+
+	/**
 	 * @var WidgetsManager
 	 */
 	protected $widgetsManager;
@@ -51,6 +57,11 @@ class Control extends Application\UI\Control
 	protected $decoratorsManager;
 
 	/**
+	 * @var Localization\ITranslator
+	 */
+	protected $translator;
+
+	/**
 	 * @var string
 	 */
 	protected $position;
@@ -59,6 +70,14 @@ class Control extends Application\UI\Control
 	 * @var Decorators\IFactory
 	 */
 	protected $decorator;
+
+	/**
+	 * @param Localization\ITranslator $translator
+	 */
+	public function injectTranslator(Localization\ITranslator $translator = NULL)
+	{
+		$this->translator = $translator;
+	}
 
 	/**
 	 * @param string $position
@@ -73,7 +92,8 @@ class Control extends Application\UI\Control
 		DecoratorsManager $decoratorsManager,
 		ComponentModel\IContainer $parent = NULL, $name = NULL
 	) {
-		parent::__construct($parent, $name);
+		// TODO: remove, only for tests
+		parent::__construct(NULL, NULL);
 
 		// Store info about widgets position
 		$this->position = $position;
@@ -102,6 +122,36 @@ class Control extends Application\UI\Control
 
 		// Call attached event
 		$this->onAttached($this);
+	}
+
+	/**
+	 * Render widgets in selected position
+	 */
+	public function render()
+	{
+		// Check if control has template
+		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
+			// Assign vars to template
+			$this->template->widgets = $this->getWidgets();
+
+			// Check if translator is available
+			if ($this->getTranslator() instanceof Localization\ITranslator) {
+				$this->template->setTranslator($this->getTranslator());
+			}
+
+			// If template was not defined before...
+			if ($this->template->getFile() === NULL) {
+				// ...try to get base component template file
+				$templatePath = !empty($this->templatePath) ? $this->templatePath : __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
+				$this->template->setFile($templatePath);
+			}
+
+			// Render component template
+			$this->template->render();
+
+		} else {
+			throw new Exceptions\InvalidStateException('Widgets container control is without template.');
+		}
 	}
 
 	/**
@@ -169,24 +219,58 @@ class Control extends Application\UI\Control
 	}
 
 	/**
-	 * Render widgets in selected position
+	 * Change default control template path
+	 *
+	 * @param string $templatePath
+	 *
+	 * @return $this
+	 *
+	 * @throws Exceptions\FileNotFoundException
 	 */
-	public function render()
+	public function setTemplateFile($templatePath)
 	{
-		$template = $this->template;
-		$template->setFile(__DIR__ . '/template/default.latte');
+		// Check if template file exists...
+		if (!is_file($templatePath)) {
+			// Remove extension
+			$template = basename($templatePath, '.latte');
 
-		$template->render();
+			// ...check if extension template is used
+			if (is_file(__DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte')) {
+				$templatePath = __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte';
+
+			} else {
+				// ...if not throw exception
+				throw new Exceptions\FileNotFoundException(sprintf('Template file "%s" was not found.', $templatePath));
+			}
+		}
+
+		$this->templatePath = $templatePath;
+
+		return $this;
 	}
 
 	/**
-	 * Create widget decorator component
+	 * @param Localization\ITranslator $translator
 	 *
-	 * @return Decorators\IDecorator
+	 * @return $this
 	 */
-	protected function createComponentDecorator()
+	public function setTranslator(Localization\ITranslator $translator)
 	{
-		return $this->decorator->create();
+		$this->translator = $translator;
+
+		return $this;
+	}
+
+	/**
+	 * @return Localization\ITranslator|null
+	 */
+	public function getTranslator()
+	{
+		if ($this->translator instanceof Localization\ITranslator) {
+			return $this->translator;
+		}
+
+		return NULL;
 	}
 
 	/**

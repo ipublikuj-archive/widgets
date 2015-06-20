@@ -15,6 +15,7 @@
 namespace IPub\Widgets\Entities;
 
 use Nette;
+use Nette\Utils;
 
 class Data extends Nette\Object implements IData
 {
@@ -168,7 +169,7 @@ class Data extends Nette\Object implements IData
 		$keys = explode('.', $key);
 
 		if (array_key_exists($keys[0], $this->params)) {
-			if (is_array($this->params[$keys[0]]) || $this->params[$keys[0]] instanceof ArrayHash) {
+			if (is_array($this->params[$keys[0]]) || $this->params[$keys[0]] instanceof Utils\ArrayHash) {
 				$val = NULL;
 
 				foreach ($keys as $key) {
