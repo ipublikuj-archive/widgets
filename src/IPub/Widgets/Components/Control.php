@@ -76,7 +76,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * @param null $name
 	 */
 	public function __construct(
-		$position,
+		$position = 'default',
 		WidgetsManager $widgetsManager,
 		DecoratorsManager $decoratorsManager,
 		ComponentModel\IContainer $parent = NULL, $name = NULL
