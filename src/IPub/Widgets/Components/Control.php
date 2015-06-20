@@ -69,6 +69,11 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	protected $decorator;
 
 	/**
+	 * @var string
+	 */
+	protected $group = 'default';
+
+	/**
 	 * @param string $position
 	 * @param WidgetsManager $widgetsManager
 	 * @param DecoratorsManager $decoratorsManager
@@ -111,12 +116,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		$this->addComponent(new ComponentModel\Container(), 'widgets');
 
 		// Register default raw widget decorator
-		if ($factory = $this->decoratorsManager->get('raw')) {
-			$this->setDecorator($factory);
-
-		} else {
-			throw new Exceptions\DecoratorNotRegisteredException(sprintf('Base widgets decorator: "%s" is not registered.', 'raw'));
-		}
+		$this->setDecorator('raw');
 
 		// Call attached event
 		$this->onAttached($this);
@@ -158,14 +158,36 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	/**
 	 * Set widgets outer decorator
 	 *
-	 * @param Decorators\IFactory $decorator
+	 * @param string $decorator
+	 *
+	 * @return $this
+	 *
+	 * @throws Exceptions\DecoratorNotRegisteredException
+	 */
+	public function setDecorator($decorator)
+	{
+		// Try to find decorator factory
+		if ($factory = $this->decoratorsManager->get((string) $decorator)) {
+			// Register decorator component
+			$this->addComponent($factory->create(), 'decorator');
+
+		} else {
+			throw new Exceptions\DecoratorNotRegisteredException(sprintf('Widgets decorator: "%s" is not registered.', $decorator));
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Set widgets group
+	 *
+	 * @param string $group
 	 *
 	 * @return $this
 	 */
-	public function setDecorator(Decorators\IFactory $decorator)
+	public function setGroup($group)
 	{
-		// Register decorator component
-		$this->addComponent($decorator->create(), 'decorator');
+		$this->group = (string) $group;
 
 		return $this;
 	}
@@ -193,14 +215,15 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * @return $this
 	 *
 	 * @throws Exceptions\WidgetNotRegisteredException
+	 * @throws Exceptions\InvalidStateException
 	 */
 	public function addWidget($name, array $data = [])
 	{
 		// Prepare widget settings data
 		$data = $this->createData($data);
 
-		if (!$factory = $this->widgetsManager->get($name)) {
-			throw new Exceptions\WidgetNotRegisteredException(sprintf('Widget of type %s is not registered.', $name));
+		if (!$factory = $this->widgetsManager->get($name, $this->group)) {
+			throw new Exceptions\WidgetNotRegisteredException(sprintf('Widget of type "%s" in group "%s" is not registered.', $name, $this->group));
 		}
 
 		// Check container exist
@@ -224,7 +247,9 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @param mixed $data
 	 *
-	 * @return Entities\IData|null
+	 * @return Entities\IData
+	 *
+	 * @throws Exceptions\InvalidStateException
 	 */
 	protected function createData($data)
 	{
@@ -232,13 +257,18 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		if ($data instanceof Entities\IData) {
 			return $data;
 
-			// or data are in array
+		// or data are in array
 		} else if (is_array($data)) {
 			// Create new data object
 			return (new Entities\Data($data));
+
+		// or data are in ArrayHash object
+		} else if ($data instanceof Utils\ArrayHash) {
+			// Create new data object
+			return (new Entities\Data((array) $data));
 		}
 
-		return NULL;
+		throw new Exceptions\InvalidStateException('Widget data could not be converted to data entity.');
 	}
 
 	/**
@@ -252,15 +282,10 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	public function __call($name, $args)
 	{
 		if (Utils\Strings::startsWith($name, 'render')) {
-			// Get component name
+			// Get decorator name
 			if ($decoratorName = Utils\Strings::capitalize(Utils\Strings::substring($name, 6))) {
-				// Set template name
-				if ($factory = $this->decoratorsManager->get($decoratorName)) {
-					$this->setDecorator($factory);
-
-				} else {
-					throw new Exceptions\DecoratorNotRegisteredException(sprintf('Widgets decorator: "%s" is not registered.', $decoratorName));
-				}
+				// Set widget decorator
+				$this->setDecorator($decoratorName);
 			}
 
 			// Call component rendering

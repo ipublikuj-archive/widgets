@@ -23,7 +23,9 @@ class WidgetsManager extends Packages\PackagesManager
 	/**
 	 * @var Widgets\IFactory[]
 	 */
-	protected $widgets = [];
+	protected $widgets = [
+		'default' => []
+	];
 
 	/**
 	 * @param Packages\Repository\IInstalledRepository $repository
@@ -40,29 +42,31 @@ class WidgetsManager extends Packages\PackagesManager
 	 * Checks whether a widget is registered
 	 *
 	 * @param string $type
+	 * @param string $group
 	 *
 	 * @return bool
 	 */
-	public function has($type)
+	public function has($type, $group = 'default')
 	{
-		return isset($this->widgets[(string) $type]);
+		return isset($this->widgets[(string) $group]) && isset($this->widgets[(string) $group][(string) $type]);
 	}
 
 	/**
 	 * Gets a widget
 	 *
-	 * @param  string $type
+	 * @param string $type
+	 * @param string $group
 	 *
 	 * @return Widgets\IFactory|NULL
 	 */
-	public function get($type)
+	public function get($type, $group = 'default')
 	{
 		// Only lower case chars are allowed
 		$type = strtolower($type);
 
 		// Check if widget exists or not...
-		if ($this->has($type)) {
-			return $this->widgets[$type];
+		if ($this->has($type, $group)) {
+			return $this->widgets[$group][$type];
 		}
 
 		return NULL;
@@ -72,21 +76,22 @@ class WidgetsManager extends Packages\PackagesManager
 	 * Helper method for widgets factories registering
 	 *
 	 * @param Widgets\IFactory $factory
+	 * @param string $group
 	 *
 	 * @return $this
 	 */
-	public function register(Widgets\IFactory $factory)
+	public function register(Widgets\IFactory $factory, $group = 'default')
 	{
 		// Get widget type
 		$type = $factory::WIDGET_TYPE;
 
 		// Check if widget is already registered
-		if ($this->has($type)) {
+		if ($this->has($type, $group)) {
 
 
 		// If not, register new widget
 		} else {
-			$this->widgets[$type] = $factory;
+			$this->widgets[$group][$type] = $factory;
 		}
 
 		return $this;

@@ -133,9 +133,14 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 		$service = $builder->getDefinition($this->prefix('widgets.manager'));
 
 		// Get all registered widgets components
-		foreach (array_keys($builder->findByTag(self::TAG_WIDGET)) as $serviceName) {
-			// Register widget to manager
-			$service->addSetup('register', ['@' .$serviceName]);
+		foreach ($builder->findByTag(self::TAG_WIDGET) as $serviceName => $groups) {
+			// Check for valid group format
+			$groups = is_array($groups) ? $groups : (is_string($groups) ? [$groups] : ['default']);
+
+			// Register widget to manager and group
+			foreach($groups as $group) {
+				$service->addSetup('register', ['@' . $serviceName, $group]);
+			}
 		}
 
 		// Get widgets manager
