@@ -23,5 +23,5 @@ interface IControl
 	 *
 	 * @return Control
 	 */
-	function create($position);
+	function create($position = 'default');
 }
