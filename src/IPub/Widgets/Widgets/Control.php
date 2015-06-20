@@ -34,32 +34,14 @@ use IPub\Widgets\Exceptions;
  *
  * @property-read Application\UI\ITemplate $template
  */
-abstract class Control extends Application\UI\Control implements IControl
+abstract class Control extends Widgets\Application\UI\BaseControl implements IControl
 {
 	const CLASSNAME = __CLASS__;
-
-	/**
-	 * @var string
-	 */
-	protected $templatePath;
 
 	/**
 	 * @var Entities\IData
 	 */
 	protected $data;
-
-	/**
-	 * @var Localization\ITranslator
-	 */
-	protected $translator;
-
-	/**
-	 * @param Localization\ITranslator $translator
-	 */
-	public function injectTranslator(Localization\ITranslator $translator = NULL)
-	{
-		$this->translator = $translator;
-	}
 
 	/**
 	 * @param Entities\IData $data
@@ -227,61 +209,6 @@ abstract class Control extends Application\UI\Control implements IControl
 			'insert'	=> $this->data->getParam('widget.title.insert', TRUE),
 			'hidden'	=> $this->data->getParam('widget.title.hidden', FALSE)
 		];
-	}
-
-	/**
-	 * Change default control template path
-	 *
-	 * @param string $templatePath
-	 *
-	 * @return $this
-	 *
-	 * @throws Exceptions\FileNotFoundException
-	 */
-	public function setTemplateFile($templatePath)
-	{
-		// Check if template file exists...
-		if (!is_file($templatePath)) {
-			// Remove extension
-			$template = basename($templatePath, '.latte');
-
-			// ...check if extension template is used
-			if (is_file(__DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte')) {
-				$templatePath = __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte';
-
-			} else {
-				// ...if not throw exception
-				throw new Exceptions\FileNotFoundException(sprintf('Template file "%s" was not found.', $templatePath));
-			}
-		}
-
-		$this->templatePath = $templatePath;
-
-		return $this;
-	}
-
-	/**
-	 * @param Localization\ITranslator $translator
-	 *
-	 * @return $this
-	 */
-	public function setTranslator(Localization\ITranslator $translator)
-	{
-		$this->translator = $translator;
-
-		return $this;
-	}
-
-	/**
-	 * @return Localization\ITranslator|null
-	 */
-	public function getTranslator()
-	{
-		if ($this->translator instanceof Localization\ITranslator) {
-			return $this->translator;
-		}
-
-		return NULL;
 	}
 
 	/**
