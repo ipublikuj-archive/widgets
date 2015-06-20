@@ -134,8 +134,11 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 
 			// If template was not defined before...
 			if ($this->template->getFile() === NULL) {
+				// Get component actual dir
+				$dir = dirname($this->getReflection()->getFileName());
+
 				// ...try to get base component template file
-				$templatePath = !empty($this->templatePath) ? $this->templatePath : __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
+				$templatePath = !empty($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
 				$this->template->setFile($templatePath);
 			}
 

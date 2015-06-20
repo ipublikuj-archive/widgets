@@ -28,7 +28,7 @@ use IPub\Widgets\Decorators;
  *
  * @property-read Application\UI\ITemplate $template
  */
-class Control extends Decorator
+class Control extends Decorators\Decorator
 {
 	const CLASSNAME = __CLASS__;
 }

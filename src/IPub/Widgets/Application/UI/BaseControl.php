@@ -65,9 +65,12 @@ abstract class BaseControl extends Application\UI\Control
 			// Remove extension
 			$template = basename($templatePath, '.latte');
 
+			// Get component actual dir
+			$dir = dirname($this->getReflection()->getFileName());
+
 			// ...check if extension template is used
-			if (is_file(__DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte')) {
-				$templatePath = __DIR__ . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte';
+			if (is_file($dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte')) {
+				$templatePath = $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte';
 
 			} else {
 				// ...if not throw exception
