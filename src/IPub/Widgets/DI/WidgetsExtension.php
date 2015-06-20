@@ -17,6 +17,7 @@ namespace IPub\Widgets\DI;
 use Nette;
 use Nette\DI;
 use Nette\Utils;
+
 use IPub;
 use IPub\Widgets;
 use IPub\Widgets\Components;
