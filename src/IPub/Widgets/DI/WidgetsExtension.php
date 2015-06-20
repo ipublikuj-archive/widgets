@@ -17,8 +17,6 @@ namespace IPub\Widgets\DI;
 use Nette;
 use Nette\DI;
 use Nette\Utils;
-use Nette\PhpGenerator as Code;
-
 use IPub;
 use IPub\Widgets;
 use IPub\Widgets\Components;
