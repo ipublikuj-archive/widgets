@@ -95,6 +95,9 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		// Extension managers
 		$this->widgetsManager = $widgetsManager;
 		$this->decoratorsManager = $decoratorsManager;
+
+		// Register widgets container
+		$this->addComponent(new ComponentModel\Container(), 'widgets');
 	}
 
 	/**
@@ -111,9 +114,6 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		if (!$presenter instanceof Application\UI\Presenter) {
 			return;
 		}
-
-		// Register widgets container
-		$this->addComponent(new ComponentModel\Container(), 'widgets');
 
 		// Register default raw widget decorator
 		$this->setDecorator('raw');
@@ -190,6 +190,16 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		$this->group = (string) $group;
 
 		return $this;
+	}
+
+	/**
+	 * Get widgets group
+	 *
+	 * @return string
+	 */
+	public function getGroup()
+	{
+		return $this->group;
 	}
 
 	/**
