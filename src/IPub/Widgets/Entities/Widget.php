@@ -40,7 +40,7 @@ class Widget extends Packages\Entities\Package implements IWidget
 	public function getExtensionName()
 	{
 		// Create extension name from package name
-		return $extensionName = lcfirst(implode('', array_map('ucfirst', explode('-', Utils\Strings::webalize($this->name)))));
+		return lcfirst(implode('', array_map('ucfirst', explode('-', Utils\Strings::webalize($this->name)))));
 	}
 
 	/**

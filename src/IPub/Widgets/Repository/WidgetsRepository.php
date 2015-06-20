@@ -18,8 +18,20 @@ use Nette;
 use Nette\Utils;
 
 use IPub;
+use IPub\Widgets\Entities;
+
 use IPub\Packages;
 
+/**
+ * Widgets repository finder definition
+ *
+ * @package		iPublikuj:Widgets!
+ * @subpackage	Repository
+ *
+ * @method Entities\IWidget[] getPackages
+ * @method Entities\IWidget|null findPackage($name, $version = 'latest')
+ * @method Entities\IWidget[] findPackages($name, $version = 'latest')
+ */
 class WidgetsRepository extends Packages\Repository\InstalledRepository
 {
 	const CLASSNAME = __CLASS__;
