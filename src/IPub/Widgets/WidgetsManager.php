@@ -14,13 +14,6 @@
 
 namespace IPub\Widgets;
 
-use Nette;
-use Nette\Application;
-use Nette\Localization;
-use Nette\Security;
-
-use IPub\Widgets\Filters;
-
 use IPub\Packages;
 
 class WidgetsManager extends Packages\PackagesManager
@@ -126,7 +119,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 *
 	 * @param string $offset
 	 *
-	 * @return Packages\Entities\IPackage|NULL
+	 * @return Widgets\IFactory
 	 */
 	public function offsetGet($offset)
 	{

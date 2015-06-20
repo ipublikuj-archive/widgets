@@ -14,12 +14,8 @@
 
 namespace IPub\Widgets;
 
-use Nette;
 use Nette\DI;
-use Nette\Utils;
-
 use IPub;
-use IPub\Framework;
 
 class WidgetExtension extends DI\CompilerExtension
 {
@@ -39,8 +35,8 @@ class WidgetExtension extends DI\CompilerExtension
 	 */
 	public function __construct(Entities\IWidget $package, array $definition = [])
 	{
-		$this->package		= $package;
-		$this->definition	= $definition;
+		$this->package = $package;
+		$this->definition = $definition;
 	}
 
 	public function loadConfiguration()

@@ -146,8 +146,9 @@ class Data extends Nette\Object implements IData
 			$last = array_pop($keys);
 
 			foreach ($keys as $key) {
-				if (!isset($val[$key]) || !is_array($val[$key]))
-					$val[$key] = array();
+				if (!isset($val[$key]) || !is_array($val[$key])) {
+									$val[$key] = array();
+				}
 
 				$val = &$val[$key];
 			}
