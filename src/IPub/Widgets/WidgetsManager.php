@@ -86,11 +86,7 @@ class WidgetsManager extends Packages\PackagesManager
 		$type = $factory::WIDGET_TYPE;
 
 		// Check if widget is already registered
-		if ($this->has($type, $group)) {
-
-
-		// If not, register new widget
-		} else {
+		if (!$this->has($type, $group)) {
 			$this->widgets[$group][$type] = $factory;
 		}
 
