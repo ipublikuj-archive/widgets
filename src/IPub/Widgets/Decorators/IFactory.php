@@ -17,7 +17,7 @@ namespace IPub\Widgets\Decorators;
 interface IFactory
 {
 	/**
-	 * @return null
+	 * @return Decorator
 	 */
 	public function create();
 }

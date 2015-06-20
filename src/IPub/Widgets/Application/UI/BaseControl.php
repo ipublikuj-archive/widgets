@@ -29,7 +29,7 @@ use IPub\Widgets\Exceptions;
  *
  * @property-read Application\UI\ITemplate $template
  */
-class BaseControl extends Application\UI\Control
+abstract class BaseControl extends Application\UI\Control
 {
 	/**
 	 * @var string
