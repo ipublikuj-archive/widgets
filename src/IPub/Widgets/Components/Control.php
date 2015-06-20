@@ -103,7 +103,9 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	{
 		parent::attached($presenter);
 
-		if (!$presenter instanceof Application\UI\Presenter) return;
+		if (!$presenter instanceof Application\UI\Presenter) {
+			return;
+		}
 
 		// Register widgets container
 		$this->addComponent(new ComponentModel\Container(), 'widgets');
@@ -222,7 +224,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @param mixed $data
 	 *
-	 * @return Entities\Data|null
+	 * @return Entities\IData|null
 	 */
 	protected function createData($data)
 	{

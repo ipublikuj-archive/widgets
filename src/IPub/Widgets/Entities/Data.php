@@ -52,7 +52,7 @@ class Data extends Nette\Object implements IData
 	public function __construct(array $data = NULL)
 	{
 		if ($data != NULL) {
-			foreach($data as $property => $value) {
+			foreach ($data as $property => $value) {
 				if (property_exists($this, $property)) {
 					$this->__set($property, $value);
 				}
@@ -146,7 +146,7 @@ class Data extends Nette\Object implements IData
 			$last = array_pop($keys);
 
 			foreach ($keys as $key) {
-				if (!isset($val[$key]) || !is_array($val[$key]) )
+				if (!isset($val[$key]) || !is_array($val[$key]))
 					$val[$key] = array();
 
 				$val = &$val[$key];
