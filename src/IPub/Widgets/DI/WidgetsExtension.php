@@ -103,6 +103,7 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 		$builder->addDefinition($this->prefix('widgets.component'))
 			->setClass(Components\Control::CLASSNAME)
 			->setImplement(Components\IControl::CLASSNAME)
+			->setArguments([new Nette\PhpGenerator\PhpLiteral('$position')])
 			->setInject(TRUE)
 			->addTag('cms.widgets');
 
