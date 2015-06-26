@@ -61,9 +61,6 @@ class WidgetsManager extends Packages\PackagesManager
 	 */
 	public function get($type, $group = 'default')
 	{
-		// Only lower case chars are allowed
-		$type = strtolower($type);
-
 		// Check if widget exists or not...
 		if ($this->has($type, $group)) {
 			return $this->widgets[$group][$type];

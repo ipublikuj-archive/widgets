@@ -17,11 +17,11 @@ namespace IPub\Widgets\Entities;
 interface IData
 {
 	/**
-	 * Get stored widget name
+	 * Get stored widget title
 	 *
 	 * @return string
 	 */
-	public function getName();
+	public function getTitle();
 
 	/**
 	 * Get stored widget description
@@ -43,6 +43,13 @@ interface IData
 	 * @return int
 	 */
 	public function getPriority();
+
+	/**
+	 * Get stored widget priority
+	 *
+	 * @return bool
+	 */
+	public function getStatus();
 
 	/**
 	 * Get stored widget style name

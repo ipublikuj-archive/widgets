@@ -71,14 +71,14 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getName()
+	public function getTitle()
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
 			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
-		return $this->data->getName();
+		return $this->data->getTitle();
 	}
 
 	/**
@@ -110,6 +110,19 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	/**
 	 * {@inheritdoc}
 	 */
+	public function getStatus()
+	{
+		// Widget data must be loaded
+		if (!$this->data instanceof Entities\IData) {
+			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+		}
+
+		return $this->data->getStatus();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getPosition()
 	{
 		// Widget data must be loaded
@@ -127,6 +140,9 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	{
 		// Check if control has template
 		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
+			// Process actions before render
+			$this->beforeRender();
+
 			// Check if translator is available
 			if ($this->getTranslator() instanceof Localization\ITranslator) {
 				$this->template->setTranslator($this->getTranslator());
@@ -138,12 +154,9 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 				$dir = dirname($this->getReflection()->getFileName());
 
 				// ...try to get base component template file
-				$templatePath = !empty($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
+				$templatePath = $this->templatePath !== NULL && file_exists($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
 				$this->template->setFile($templatePath);
 			}
-
-			// Process actions before render
-			$this->beforeRender();
 
 			// Render component template
 			$this->template->render();
@@ -159,31 +172,31 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	protected function beforeRender()
 	{
 		// Get widget title
-		$name = $this->data->getName();
+		$name = $this->data->getTitle();
 
 		// If widget name has space...
-		$pos = mb_strpos($this->data->getName(), ' ');
-		if ($pos !== FALSE && mb_strpos($this->data->getName(), '||') === FALSE) {
+		$pos = mb_strpos($this->data->getTitle(), ' ');
+		if ($pos !== FALSE && mb_strpos($this->data->getTitle(), '||') === FALSE) {
 			$name = Utils\Html::el('span')
 				->addAttributes(['class' => 'color'])
-				->setText(mb_substr($this->data->getName(), 0, $pos))
+				->setText(mb_substr($this->data->getTitle(), 0, $pos))
 				->render();
 
 			// Modify widget name
-			$name = $name . mb_substr($this->data->getName(), $pos);
+			$name = $name . mb_substr($this->data->getTitle(), $pos);
 		}
 
 		// If widget name has subtitle...
-		$pos = mb_strpos($this->data->getName(), '||');
+		$pos = mb_strpos($this->data->getTitle(), '||');
 		if ($pos !== FALSE) {
 			$title = Utils\Html::el('span')
 				->addAttributes(['class' => 'title'])
-				->setText(mb_substr($this->data->getName(), 0, $pos))
+				->setText(mb_substr($this->data->getTitle(), 0, $pos))
 				->render();
 
 			$subtitle = Utils\Html::el('span')
 				->addAttributes(['class' => 'subtitle'])
-				->setText(mb_substr($this->data->getName(), $pos + 2))
+				->setText(mb_substr($this->data->getTitle(), $pos + 2))
 				->render();
 
 			// Split name to title & subtitle

@@ -56,7 +56,7 @@ abstract class Decorator extends Widgets\Application\UI\BaseControl implements D
 				$dir = dirname($this->getReflection()->getFileName());
 
 				// ...try to get base component template file
-				$templatePath = !empty($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
+				$templatePath = $this->templatePath !== NULL && file_exists($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
 				$this->template->setFile($templatePath);
 			}
 

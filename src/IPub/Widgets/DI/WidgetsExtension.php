@@ -23,6 +23,7 @@ use IPub\Widgets;
 use IPub\Widgets\Components;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Exceptions;
+use IPub\Widgets\Filter;
 use IPub\Widgets\Loaders;
 use IPub\Widgets\Repository;
 
@@ -100,6 +101,15 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 			$widgetsManager->addSetup('addPackage', [$packageEntity]);
 		}
 
+		// Widgets manager
+		$filtersManager = $builder->addDefinition($this->prefix('filters.manager'))
+			->setClass(Widgets\FiltersManager::CLASSNAME)
+			->addTag('cms.widgets');
+
+		// Register widget filters
+		$filtersManager->addSetup('register', array('priority', Filter\PriorityFilter::CLASSNAME));
+		$filtersManager->addSetup('register', array('status', Filter\StatusFilter::CLASSNAME, 16));
+
 		$builder->addDefinition($this->prefix('widgets.component'))
 			->setClass(Components\Control::CLASSNAME)
 			->setImplement(Components\IControl::CLASSNAME)
@@ -151,6 +161,27 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 		foreach (array_keys($builder->findByTag(self::TAG_DECORATOR)) as $serviceName) {
 			// Register decorator to manager
 			$service->addSetup('register', ['@' .$serviceName]);
+		}
+
+		// Get menu provider
+		$service = $builder->getDefinition($this->prefix('widgets.component'));
+
+		// Check all extensions and search for menu items provider
+		foreach ($this->compiler->getExtensions() as $extension) {
+			if (!$extension instanceof IWidgetsProvider) {
+				continue;
+			}
+
+			// Get menu groups & items from extension
+			foreach($extension->getWidgets() as $group => $widgets) {
+				foreach($widgets as $id => $properties) {
+					if (!isset($properties['priority'])) {
+						$properties['priority'] = 100;
+					}
+
+					$service->addSetup('addWidget', [$properties['type'], $properties, $group, $properties['position']]);
+				}
+			}
 		}
 	}
 

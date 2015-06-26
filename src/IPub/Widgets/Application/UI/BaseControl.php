@@ -52,33 +52,33 @@ abstract class BaseControl extends Application\UI\Control
 	/**
 	 * Change default control template path
 	 *
-	 * @param string $templatePath
+	 * @param string $templateFile
 	 *
 	 * @return $this
 	 *
 	 * @throws Exceptions\FileNotFoundException
 	 */
-	public function setTemplateFile($templatePath)
+	public function setTemplateFile($templateFile)
 	{
 		// Check if template file exists...
-		if (!is_file($templatePath)) {
-			// Remove extension
-			$template = basename($templatePath, '.latte');
-
+		if (!is_file($templateFile)) {
 			// Get component actual dir
 			$dir = dirname($this->getReflection()->getFileName());
 
 			// ...check if extension template is used
-			if (is_file($dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte')) {
-				$templatePath = $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $template .'.latte';
+			if (is_file($dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $templateFile)) {
+				$templateFile = $dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $templateFile;
+
+			} else if (is_file($dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $templateFile .'.latte')) {
+				$templateFile = $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $templateFile .'.latte';
 
 			} else {
 				// ...if not throw exception
-				throw new Exceptions\FileNotFoundException(sprintf('Template file "%s" was not found.', $templatePath));
+				throw new Exceptions\FileNotFoundException(sprintf('Template file "%s" was not found.', $templateFile));
 			}
 		}
 
-		$this->templatePath = $templatePath;
+		$this->templatePath = $templateFile;
 
 		return $this;
 	}

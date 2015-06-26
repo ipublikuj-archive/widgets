@@ -1,7 +1,3 @@
-<div class="uk-width-medium-1-3">
-	{foreach $control->getWidgets() as $widget}
-	<div class="uk-panel uk-panel-box">
-		{control decorator $widget}
-	</div>
-	{/foreach}
-</div>
+{foreach $control->getWidgets() as $widget}
+	{control decorator $widget}
+{/foreach}

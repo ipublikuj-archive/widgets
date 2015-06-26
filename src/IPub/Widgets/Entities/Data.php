@@ -24,7 +24,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * @var string
 	 */
-	protected $name;
+	protected $title;
 
 	/**
 	 * @var string
@@ -42,6 +42,11 @@ class Data extends Nette\Object implements IData
 	protected $priority;
 
 	/**
+	 * @var bool
+	 */
+	protected $status;
+
+	/**
 	 * @var array
 	 */
 	protected $params = [];
@@ -54,7 +59,7 @@ class Data extends Nette\Object implements IData
 		if ($data != NULL) {
 			foreach ($data as $property => $value) {
 				if (property_exists($this, $property)) {
-					$this->__set($property, $value);
+					$this->{$property} = $value;
 				}
 			}
 		}
@@ -63,9 +68,9 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getName()
+	public function getTitle()
 	{
-		return $this->name;
+		return $this->title;
 	}
 
 	/**
@@ -90,6 +95,14 @@ class Data extends Nette\Object implements IData
 	public function getPriority()
 	{
 		return $this->priority;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getStatus()
+	{
+		return $this->status ? TRUE : FALSE;
 	}
 
 	/**

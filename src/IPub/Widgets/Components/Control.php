@@ -28,6 +28,7 @@ use IPub\Widgets\Widgets;
 
 use IPub\Widgets\WidgetsManager;
 use IPub\Widgets\DecoratorsManager;
+use IPub\Widgets\FiltersManager;
 
 /**
  * Widgets container control definition
@@ -59,6 +60,11 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	protected $decoratorsManager;
 
 	/**
+	 * @var FiltersManager
+	 */
+	protected $filtersManager;
+
+	/**
 	 * @var string
 	 */
 	protected $position;
@@ -77,6 +83,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * @param string $position
 	 * @param WidgetsManager $widgetsManager
 	 * @param DecoratorsManager $decoratorsManager
+	 * @param FiltersManager $filtersManager
 	 * @param ComponentModel\IContainer $parent
 	 * @param null $name
 	 */
@@ -84,6 +91,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		$position = 'default',
 		WidgetsManager $widgetsManager,
 		DecoratorsManager $decoratorsManager,
+		FiltersManager $filtersManager,
 		ComponentModel\IContainer $parent = NULL, $name = NULL
 	) {
 		// TODO: remove, only for tests
@@ -95,6 +103,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		// Extension managers
 		$this->widgetsManager = $widgetsManager;
 		$this->decoratorsManager = $decoratorsManager;
+		$this->filtersManager = $filtersManager;
 
 		// Register widgets container
 		$this->addComponent(new ComponentModel\Container(), 'widgets');
@@ -143,7 +152,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 				$dir = dirname($this->getReflection()->getFileName());
 
 				// ...try to get base component template file
-				$templatePath = !empty($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
+				$templatePath = $this->templatePath !== NULL && file_exists($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
 				$this->template->setFile($templatePath);
 			}
 
@@ -209,7 +218,22 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 */
 	public function getWidgets()
 	{
-		if ($container = $this->getComponent('widgets')->getComponent($this->position, TRUE) AND $widgets = $container->getComponents()) {
+		if (
+			$container = $this->getComponent('widgets')->getComponent($this->group, FALSE)
+			AND $positionContainer = $container->getComponent($this->position, FALSE)
+			AND $widgets = $positionContainer->getComponents()
+		) {
+			// Apply widgets filters
+			foreach ($this->filtersManager as $priority=>$filters) {
+				foreach ($filters as $class) {
+					$widgets = new $class($widgets, [
+						'access' => TRUE,
+						'active' => TRUE,
+						'status' => 1,
+					]);
+				}
+			}
+
 			return $widgets;
 		}
 
@@ -221,33 +245,50 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @param string $name
 	 * @param array $data
+	 * @param string|null $group
+	 * @param string|null $position
 	 *
 	 * @return $this
 	 *
 	 * @throws Exceptions\WidgetNotRegisteredException
 	 * @throws Exceptions\InvalidStateException
 	 */
-	public function addWidget($name, array $data = [])
+	public function addWidget($name, array $data = [], $group = NULL, $position = NULL)
 	{
+		if ($position === NULL) {
+			$position = $this->position;
+		}
+
+		if ($group === NULL) {
+			$group = $this->group;
+		}
+
 		// Prepare widget settings data
 		$data = $this->createData($data);
 
-		if (!$factory = $this->widgetsManager->get($name, $this->group)) {
-			throw new Exceptions\WidgetNotRegisteredException(sprintf('Widget of type "%s" in group "%s" is not registered.', $name, $this->group));
+		if (!$factory = $this->widgetsManager->get($name, $group)) {
+			throw new Exceptions\WidgetNotRegisteredException(sprintf('Widget of type "%s" in group "%s" is not registered.', $name, $group));
 		}
 
 		// Check container exist
-		$container = $this->getComponent('widgets')->getComponent($this->position, FALSE);
+		$container = $this->getComponent('widgets')->getComponent($group, FALSE);
 		if (!$container) {
-			$this->getComponent('widgets')->addComponent(new Nette\ComponentModel\Container, $this->position);
-			$container = $this->getComponent('widgets')->getComponent($this->position);
+			$this->getComponent('widgets')->addComponent(new Nette\ComponentModel\Container, $group);
+			$container = $this->getComponent('widgets')->getComponent($group);
+		}
+
+		// Check container exist
+		$positionContainer = $container->getComponent($position, FALSE);
+		if (!$positionContainer) {
+			$container->addComponent(new Nette\ComponentModel\Container, $position);
+			$positionContainer = $container->getComponent($position);
 		}
 
 		// Create component
 		$widget = $factory->create($data);
 
 		// Add widget component to container/position
-		$container->addComponent($widget, ($widget->getName() . spl_object_hash($data)));
+		$positionContainer->addComponent($widget, ($widget->getName() . spl_object_hash($data)));
 
 		return $this;
 	}

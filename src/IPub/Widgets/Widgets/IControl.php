@@ -57,6 +57,15 @@ interface IControl
 	public function getPriority();
 
 	/**
+	 * Get current widget status
+	 *
+	 * @return int
+	 *
+	 * @throws \LogicException
+	 */
+	public function getStatus();
+
+	/**
 	 * Get current widget position name
 	 *
 	 * @return string
