@@ -27,7 +27,7 @@
 		"nette/utils"		: "~2.2",
 		"latte/latte"		: "~2.2",
 
-		"ipub/packages"		: "^1.0.0"
+		"ipub/packages"		: "^1.0.3"
 	},
 
 	"require-dev": {
