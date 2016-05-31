@@ -129,7 +129,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		}
 
 		// Register default raw widget decorator
-		$this->setDecorator('raw');
+		$this->setDecorator('widgets.decorator.raw');
 
 		// Call attached event
 		$this->onAttached($this);
