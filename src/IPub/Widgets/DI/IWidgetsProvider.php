@@ -24,7 +24,10 @@ namespace IPub\Widgets\DI;
  */
 interface IWidgetsProvider
 {
-	const INTERFACENAME = __CLASS__;
+	/**
+	 * Define interface name
+	 */
+	const INTERFACE_NAME = __CLASS__;
 
 	/**
 	 * Return array of widgets

@@ -52,21 +52,21 @@ class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets manager
 		$builder->addDefinition($this->prefix('widgets.manager'))
-			->setClass(Widgets\WidgetsManager::CLASSNAME)
+			->setClass(Widgets\WidgetsManager::CLASS_NAME)
 			->addTag('cms.widgets');
 
 		// Widgets filter manager
 		$filtersManager = $builder->addDefinition($this->prefix('filters.manager'))
-			->setClass(Widgets\FiltersManager::CLASSNAME)
+			->setClass(Widgets\FiltersManager::CLASS_NAME)
 			->addTag('cms.widgets');
 
 		// Register widget filters
-		$filtersManager->addSetup('register', ['priority', Filter\PriorityFilter::CLASSNAME]);
-		$filtersManager->addSetup('register', ['status', Filter\StatusFilter::CLASSNAME, 16]);
+		$filtersManager->addSetup('register', ['priority', Filter\PriorityFilter::CLASS_NAME]);
+		$filtersManager->addSetup('register', ['status', Filter\StatusFilter::CLASS_NAME, 16]);
 
 		$builder->addDefinition($this->prefix('widgets.component'))
-			->setClass(Components\Control::CLASSNAME)
-			->setImplement(Components\IControl::INTERFACENAME)
+			->setClass(Components\Control::CLASS_NAME)
+			->setImplement(Components\IControl::INTERFACE_NAME)
 			->setArguments([new Nette\PhpGenerator\PhpLiteral('$position')])
 			->setInject(TRUE)
 			->addTag('cms.widgets');
@@ -77,13 +77,13 @@ class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets decorators manager
 		$builder->addDefinition($this->prefix('decorators.manager'))
-			->setClass(Widgets\DecoratorsManager::CLASSNAME)
+			->setClass(Widgets\DecoratorsManager::CLASS_NAME)
 			->addTag('cms.widgets');
 
 		// Widgets raw decorator
 		$builder->addDefinition('widgets.decorator.raw')
-			->setClass(Decorators\Raw\Control::CLASSNAME)
-			->setImplement(Decorators\Raw\IControl::CLASSNAME)
+			->setClass(Decorators\Raw\Control::CLASS_NAME)
+			->setImplement(Decorators\Raw\IControl::CLASS_NAME)
 			->setInject(TRUE)
 			->addTag('cms.widgets')
 			->addTag(self::TAG_WIDGET_DECORATOR);
@@ -122,7 +122,7 @@ class WidgetsExtension extends DI\CompilerExtension
 
 		// Search for widgets provider extensions
 		/** @var IWidgetsProvider $extension */
-		foreach ($this->compiler->getExtensions(IWidgetsProvider::INTERFACENAME) as $extension) {
+		foreach ($this->compiler->getExtensions(IWidgetsProvider::INTERFACE_NAME) as $extension) {
 			// Get widget groups & widgets from extension
 			foreach ($extension->getWidgets() as $group => $widgets) {
 				foreach ($widgets as $id => $properties) {

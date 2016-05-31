@@ -24,7 +24,10 @@ namespace IPub\Widgets\Components;
  */
 interface IControl
 {
-	const INTERFACENAME = __CLASS__;
+	/**
+	 * Define interface name
+	 */
+	const INTERFACE_NAME = __CLASS__;
 
 	/**
 	 * @param string $position

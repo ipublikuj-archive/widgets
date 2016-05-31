@@ -23,7 +23,10 @@ use IPub\Widgets\Filter;
 
 final class FiltersManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @var string[][]
@@ -74,7 +77,7 @@ final class FiltersManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 */
 	public function register($name, $filter, $priority = 0)
 	{
-		if (!is_string($filter) || !is_subclass_of($filter, Filter\FilterIterator::CLASSNAME)) {
+		if (!is_string($filter) || !is_subclass_of($filter, Filter\FilterIterator::CLASS_NAME)) {
 			throw new Exceptions\InvalidArgumentException(sprintf('Given filter "%s" is not of type IPub\Widgets\Filter\FilterIterator', (string) $filter));
 		}
 

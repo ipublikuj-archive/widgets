@@ -30,5 +30,8 @@ use IPub\Widgets\Decorators;
  */
 class Control extends Decorators\Decorator
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 }

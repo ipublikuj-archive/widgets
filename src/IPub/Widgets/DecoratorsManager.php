@@ -21,7 +21,10 @@ use IPub\Widgets\Decorators;
 
 final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @var Decorators\IFactory[]

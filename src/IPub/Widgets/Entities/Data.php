@@ -19,7 +19,10 @@ use Nette\Utils;
 
 class Data extends Nette\Object implements IData
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @var string

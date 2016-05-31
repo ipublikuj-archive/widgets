@@ -46,7 +46,10 @@ use IPub\Packages;
  */
 class Control extends IPub\Widgets\Application\UI\BaseControl
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @var array

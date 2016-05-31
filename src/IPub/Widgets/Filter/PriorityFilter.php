@@ -27,7 +27,10 @@ use Nette\Application;
  */
 class PriorityFilter extends FilterIterator
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * {@inheritdoc}

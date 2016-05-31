@@ -27,7 +27,10 @@ use Nette\Application;
  */
 abstract class FilterIterator extends \FilterIterator
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @var array

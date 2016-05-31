@@ -27,7 +27,10 @@ use IPub\Widgets\Decorators;
  */
 interface IControl extends Decorators\IFactory
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @return Control

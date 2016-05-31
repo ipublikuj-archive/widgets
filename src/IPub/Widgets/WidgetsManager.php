@@ -21,7 +21,10 @@ use IPub\Widgets\Widgets;
 
 final class WidgetsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @var Widgets\IFactory[][]

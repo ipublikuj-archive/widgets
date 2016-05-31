@@ -38,7 +38,10 @@ use IPub\Widgets\Exceptions;
  */
 abstract class Control extends Widgets\Application\UI\BaseControl implements IControl
 {
-	const CLASSNAME = __CLASS__;
+	/**
+	 * Define class name
+	 */
+	const CLASS_NAME = __CLASS__;
 
 	/**
 	 * @var Entities\IData
