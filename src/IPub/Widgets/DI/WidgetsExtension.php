@@ -81,7 +81,7 @@ class WidgetsExtension extends DI\CompilerExtension
 			->addTag('cms.widgets');
 
 		// Widgets raw decorator
-		$builder->addDefinition($this->prefix('decorator.raw'))
+		$builder->addDefinition('widgets.decorator.raw')
 			->setClass(Decorators\Raw\Control::CLASSNAME)
 			->setImplement(Decorators\Raw\IControl::CLASSNAME)
 			->setInject(TRUE)
