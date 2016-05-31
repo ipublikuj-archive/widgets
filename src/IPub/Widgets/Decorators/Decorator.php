@@ -2,14 +2,14 @@
 /**
  * Decorator.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Decorators
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Decorators
+ * @since          1.0.0
  *
- * @date		18.06.15
+ * @date           18.06.15
  */
 
 namespace IPub\Widgets\Decorators;
@@ -26,17 +26,17 @@ use IPub\Widgets\Exceptions;
 /**
  * Widgets base decorator control definition
  *
- * @package		iPublikuj:Widgets!
- * @subpackage	Decorators
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Decorators
  *
- * @property-read Application\UI\ITemplate $template
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @property Application\UI\ITemplate $template
  */
 abstract class Decorator extends Widgets\Application\UI\BaseControl implements Decorators\IDecorator
 {
 	/**
-	 * Render widget with decorator
-	 *
-	 * @param Widgets\Widgets\IControl $widget
+	 * @inheritdoc
 	 */
 	public function render(Widgets\Widgets\IControl $widget)
 	{
@@ -56,8 +56,8 @@ abstract class Decorator extends Widgets\Application\UI\BaseControl implements D
 				$dir = dirname($this->getReflection()->getFileName());
 
 				// ...try to get base component template file
-				$templatePath = $this->templatePath !== NULL && file_exists($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
-				$this->template->setFile($templatePath);
+				$templateFile = $this->templateFile !== NULL && is_file($this->templateFile) ? $this->templateFile : $dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'default.latte';
+				$this->template->setFile($templateFile);
 			}
 
 			// Render component template

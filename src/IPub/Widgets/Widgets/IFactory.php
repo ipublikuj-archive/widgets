@@ -2,14 +2,14 @@
 /**
  * IFactory.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Widgets
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Widgets
+ * @since          1.0.0
  *
- * @date		17.09.14
+ * @date           17.09.14
  */
 
 namespace IPub\Widgets\Widgets;
@@ -17,6 +17,14 @@ namespace IPub\Widgets\Widgets;
 use IPub;
 use IPub\Widgets\Entities;
 
+/**
+ * Widgets control factory definition
+ *
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Widgets
+ *
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ */
 interface IFactory
 {
 	/**

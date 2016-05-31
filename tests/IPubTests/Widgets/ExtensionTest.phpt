@@ -3,14 +3,14 @@
  * Test: IPub\Widgets\Extension
  * @testCase
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Tests
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Tests
+ * @since          1.0.0
  *
- * @date		20.06.15
+ * @date           20.06.15
  */
 
 namespace IPubTests\Widgets;
@@ -28,7 +28,7 @@ require __DIR__ . '/../bootstrap.php';
 class ExtensionTest extends Tester\TestCase
 {
 	/**
-	 * @return \SystemContainer|\Nette\DI\Container
+	 * @return \Nette\DI\Container
 	 */
 	protected function createContainer()
 	{

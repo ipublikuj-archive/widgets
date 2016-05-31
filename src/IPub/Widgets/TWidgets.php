@@ -2,14 +2,14 @@
 /**
  * TWidgets.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	common
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     common
+ * @since          1.0.0
  *
- * @date		18.06.15
+ * @date           18.06.15
  */
 
 namespace IPub\Widgets;
@@ -42,7 +42,7 @@ trait TWidgets
 	 */
 	public function createComponentWidgets()
 	{
-		return new Application\UI\Multiplier(function($position) {
+		return new Application\UI\Multiplier(function ($position) {
 			return $this->widgetsFactory->create($position);
 		});
 	}

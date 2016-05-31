@@ -17,6 +17,14 @@ namespace IPub\Widgets\Filter;
 use Nette;
 use Nette\Application;
 
+/**
+ * Widgets status filter
+ *
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Filter
+ *
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ */
 class StatusFilter extends FilterIterator
 {
 	const CLASSNAME = __CLASS__;
@@ -41,7 +49,7 @@ class StatusFilter extends FilterIterator
 	 */
 	public function accept()
 	{
-		if (NULL === $this->status) {
+		if ($this->status === NULL) {
 			return TRUE;
 		}
 

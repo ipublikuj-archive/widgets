@@ -2,14 +2,14 @@
 /**
  * Widget.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Widgets
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Widgets
+ * @since          1.0.0
  *
- * @date		15.09.14
+ * @date           15.09.14
  */
 
 namespace IPub\Widgets\Widgets;
@@ -29,10 +29,12 @@ use IPub\Widgets\Exceptions;
 /**
  * Widgets control definition
  *
- * @package		iPublikuj:Widgets!
- * @subpackage	Widgets
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Widgets
  *
- * @property-read Application\UI\ITemplate $template
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @property Application\UI\ITemplate $template
  */
 abstract class Control extends Widgets\Application\UI\BaseControl implements IControl
 {
@@ -64,8 +66,6 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	public function setData(Entities\IData $data)
 	{
 		$this->data = $data;
-
-		return $this;
 	}
 
 	/**
@@ -101,7 +101,7 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		return $this->data->getPriority();
@@ -114,7 +114,7 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		return $this->data->getStatus();
@@ -127,7 +127,7 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 	{
 		// Widget data must be loaded
 		if (!$this->data instanceof Entities\IData) {
-			throw new \LogicException('Missing call ' . get_called_class()  . '::setData($entity)');
+			throw new \LogicException('Missing call ' . get_called_class() . '::setData($entity)');
 		}
 
 		return $this->data->getPosition();
@@ -154,8 +154,8 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 				$dir = dirname($this->getReflection()->getFileName());
 
 				// ...try to get base component template file
-				$templatePath = $this->templatePath !== NULL && file_exists($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
-				$this->template->setFile($templatePath);
+				$templateFile = $this->templateFile !== NULL && is_file($this->templateFile) ? $this->templateFile : $dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'default.latte';
+				$this->template->setFile($templateFile);
 			}
 
 			// Render component template
@@ -206,24 +206,24 @@ abstract class Control extends Widgets\Application\UI\BaseControl implements ICo
 		// Set badge if exists
 		if ($badge = $this->data->getBadge()) {
 			$badge = Utils\Html::el('span')
-				->addAttributes(['class' => 'badge badge-'. $badge])
+				->addAttributes(['class' => 'badge badge-' . $badge])
 				->render();
 		}
 
 		// Set icon if exists
 		if ($icon = $this->data->getIcon()) {
 			$icon = Utils\Html::el('span')
-				->addAttributes(['class' => 'icon icon-'. $icon])
+				->addAttributes(['class' => 'icon icon-' . $icon])
 				->render();
 		}
 
 		// Assign basic widget data to template
-		$this->template->badge	= $badge;
-		$this->template->icon	= $icon;
-		$this->template->title	= [
-			'text'		=> $name,
-			'insert'	=> $this->data->getParam('widget.title.insert', TRUE),
-			'hidden'	=> $this->data->getParam('widget.title.hidden', FALSE)
+		$this->template->badge = $badge;
+		$this->template->icon = $icon;
+		$this->template->title = [
+			'text'   => $name,
+			'insert' => $this->data->getParam('widget.title.insert', TRUE),
+			'hidden' => $this->data->getParam('widget.title.hidden', FALSE)
 		];
 	}
 

@@ -2,14 +2,14 @@
 /**
  * BaseControl.php
  *
- * @copyright	Vice v copyright.php
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Application
- * @since		5.0
+ * @copyright      Vice v copyright.php
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Application
+ * @since          1.0.0
  *
- * @date		24.07.13
+ * @date           24.07.13
  */
 
 namespace IPub\Widgets\Application\UI;
@@ -24,17 +24,19 @@ use IPub\Widgets\Exceptions;
 /**
  * Extensions base control definition
  *
- * @package		iPublikuj:Widgets!
- * @subpackage	Application
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Application
  *
- * @property-read Application\UI\ITemplate $template
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ *
+ * @property Application\UI\ITemplate $template
  */
 abstract class BaseControl extends Application\UI\Control
 {
 	/**
 	 * @var string
 	 */
-	protected $templatePath;
+	protected $templateFile;
 
 	/**
 	 * @var Localization\ITranslator
@@ -54,8 +56,6 @@ abstract class BaseControl extends Application\UI\Control
 	 *
 	 * @param string $templateFile
 	 *
-	 * @return $this
-	 *
 	 * @throws Exceptions\FileNotFoundException
 	 */
 	public function setTemplateFile($templateFile)
@@ -66,11 +66,11 @@ abstract class BaseControl extends Application\UI\Control
 			$dir = dirname($this->getReflection()->getFileName());
 
 			// ...check if extension template is used
-			if (is_file($dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $templateFile)) {
+			if (is_file($dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $templateFile)) {
 				$templateFile = $dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $templateFile;
 
-			} else if (is_file($dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $templateFile .'.latte')) {
-				$templateFile = $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR . $templateFile .'.latte';
+			} else if (is_file($dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $templateFile . '.latte')) {
+				$templateFile = $dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $templateFile . '.latte';
 
 			} else {
 				// ...if not throw exception
@@ -78,21 +78,15 @@ abstract class BaseControl extends Application\UI\Control
 			}
 		}
 
-		$this->templatePath = $templateFile;
-
-		return $this;
+		$this->templateFile = $templateFile;
 	}
 
 	/**
 	 * @param Localization\ITranslator $translator
-	 *
-	 * @return $this
 	 */
 	public function setTranslator(Localization\ITranslator $translator)
 	{
 		$this->translator = $translator;
-
-		return $this;
 	}
 
 	/**

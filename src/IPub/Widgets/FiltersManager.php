@@ -2,14 +2,14 @@
 /**
  * FilterManager.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	common
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     common
+ * @since          1.0.0
  *
- * @date		26.06.15
+ * @date           26.06.15
  */
 
 namespace IPub\Widgets;
@@ -21,12 +21,12 @@ use IPub;
 use IPub\Widgets\Exceptions;
 use IPub\Widgets\Filter;
 
-class FiltersManager implements \IteratorAggregate
+final class FiltersManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
 	const CLASSNAME = __CLASS__;
 
 	/**
-	 * @var string[]
+	 * @var string[][]
 	 */
 	protected $filters = [];
 
@@ -74,7 +74,7 @@ class FiltersManager implements \IteratorAggregate
 	 */
 	public function register($name, $filter, $priority = 0)
 	{
-		if (!is_string($filter) || !is_subclass_of($filter, 'IPub\Widgets\Filter\FilterIterator')) {
+		if (!is_string($filter) || !is_subclass_of($filter, Filter\FilterIterator::CLASSNAME)) {
 			throw new Exceptions\InvalidArgumentException(sprintf('Given filter "%s" is not of type IPub\Widgets\Filter\FilterIterator', (string) $filter));
 		}
 
@@ -92,7 +92,7 @@ class FiltersManager implements \IteratorAggregate
 	 */
 	public function unregister($name)
 	{
-		foreach($this->filters as $priority => $filters) {
+		foreach ($this->filters as $priority => $filters) {
 			if (array_key_exists($name, $filters)) {
 				unset($this->filters[$priority][$name]);
 			}
@@ -105,5 +105,50 @@ class FiltersManager implements \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->filters);
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param  string $offset
+	 *
+	 * @return bool
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->filters[$offset]);
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param string $offset
+	 *
+	 * @return string[]
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->filters[$offset];
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param string $offset
+	 * @param string[]|NULL $value
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->filters[$offset] = $value;
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param string $offset
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->filters[$offset]);
 	}
 }

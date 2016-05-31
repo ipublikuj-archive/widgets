@@ -76,8 +76,6 @@ interface IData
 	 * Set stored widget params
 	 *
 	 * @param array $params
-	 *
-	 * @return $this
 	 */
 	public function setParams(array $params);
 
@@ -93,8 +91,6 @@ interface IData
 	 *
 	 * @param string $key
 	 * @param string $value
-	 *
-	 * @return $this
 	 */
 	public function setParam($key, $value = NULL);
 

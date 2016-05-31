@@ -135,8 +135,6 @@ class Data extends Nette\Object implements IData
 	public function setParams(array $params)
 	{
 		$this->params = $params;
-
-		return $this;
 	}
 
 	/**
@@ -171,8 +169,6 @@ class Data extends Nette\Object implements IData
 		} else {
 			$this->params[$keys[0]] = $value;
 		}
-
-		return $this;
 	}
 
 	/**

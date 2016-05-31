@@ -2,14 +2,14 @@
 /**
  * IWidget.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Widgets
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Widgets
+ * @since          1.0.0
  *
- * @date		15.09.14
+ * @date           15.09.14
  */
 
 namespace IPub\Widgets\Widgets;
@@ -18,14 +18,20 @@ use IPub;
 use IPub\Widgets;
 use IPub\Widgets\Entities;
 
+/**
+ * Widgets control interface
+ *
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Widgets
+ *
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ */
 interface IControl
 {
 	/**
 	 * Set widget display data
 	 *
 	 * @param Entities\IData $data
-	 *
-	 * @return $this
 	 */
 	public function setData(Entities\IData $data);
 

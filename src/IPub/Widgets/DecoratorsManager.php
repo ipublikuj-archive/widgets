@@ -2,22 +2,24 @@
 /**
  * DecoratorsManager.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	common
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     common
+ * @since          1.0.0
  *
- * @date		16.06.15
+ * @date           16.06.15
  */
 
 namespace IPub\Widgets;
 
+use Nette;
+
 use IPub;
 use IPub\Widgets\Decorators;
 
-class DecoratorsManager implements \IteratorAggregate
+final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
 	const CLASSNAME = __CLASS__;
 
@@ -54,37 +56,27 @@ class DecoratorsManager implements \IteratorAggregate
 	 * Register a decorator component factory
 	 *
 	 * @param Decorators\IFactory $decorator
-	 *
-	 * @return $this
+	 * @param string $name
 	 */
-	public function register(Decorators\IFactory $decorator)
+	public function register(Decorators\IFactory $decorator, $name)
 	{
-		// Get widget type
-		$name = $decorator::DECORATOR_NAME;
-
 		$this->unregister($name);
 
 		$this->decorators[$name] = $decorator;
 
 		krsort($this->decorators);
-
-		return $this;
 	}
 
 	/**
 	 * Un-registers a decorator
 	 *
 	 * @param string $name
-	 *
-	 * @return $this
 	 */
 	public function unregister($name)
 	{
 		if (array_key_exists($name, $this->decorators)) {
 			unset($this->decorators[$name]);
 		}
-
-		return $this;
 	}
 
 	/**
@@ -93,5 +85,50 @@ class DecoratorsManager implements \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->decorators);
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param  string $offset
+	 *
+	 * @return bool
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->decorators[$offset]);
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param string $offset
+	 *
+	 * @return Decorators\IFactory
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->decorators[$offset];
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param string $offset
+	 * @param Decorators\IFactory|NULL $value
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->decorators[$offset] = $value;
+	}
+
+	/**
+	 * Implements the \ArrayAccess
+	 *
+	 * @param string $offset
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->decorators[$offset]);
 	}
 }

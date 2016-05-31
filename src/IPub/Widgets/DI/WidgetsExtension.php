@@ -2,14 +2,14 @@
 /**
  * WidgetsManagerExtension.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	DI
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     DI
+ * @since          1.0.0
  *
- * @date		15.09.14
+ * @date           15.09.14
  */
 
 namespace IPub\Widgets\DI;
@@ -24,95 +24,49 @@ use IPub\Widgets\Components;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Exceptions;
 use IPub\Widgets\Filter;
-use IPub\Widgets\Loaders;
-use IPub\Widgets\Repository;
 
-class WidgetsExtension extends DI\Extensions\ExtensionsExtension
+/**
+ * Widgets extension container
+ *
+ * @package        iPublikuj:Widgets!
+ * @subpackage     DI
+ *
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ */
+class WidgetsExtension extends DI\CompilerExtension
 {
 	// Define tag string for widgets
-	const TAG_WIDGET = 'ipub.widgets.widget';
-	// Define tag string for widgets decorators
-	const TAG_DECORATOR = 'ipub.widgets.decorator';
+	const TAG_WIDGET_CONTROL = 'ipub.widgets.widget';
 
-	/**
-	 * Extension default configuration
-	 *
-	 * @var array
-	 */
-	protected $defaults = [
-		'path' => NULL
-	];
+	// Define tag string for widgets decorators
+	const TAG_WIDGET_DECORATOR = 'ipub.widgets.decorator';
 
 	public function loadConfiguration()
 	{
 		// Get container builder
 		$builder = $this->getContainerBuilder();
-		// Get extension configuration
-		$configuration = $this->getConfig($this->defaults);
-
-		// Path have to be filled
-		Utils\Validators::assert($configuration['path'], 'string', 'Widgets packages path');
-
-		// Init packages loader
-		$loader		= new Widgets\Loaders\WidgetLoader;
-		// Init packages repository
-		$repository	= new Widgets\Repository\WidgetsRepository($configuration['path'], $loader);
-		// Init package installer
-		$installer	= new Widgets\Installers\WidgetsInstaller($loader, $repository);
 
 		/**
 		 * Widgets services
 		 */
 
 		// Widgets manager
-		$widgetsManager = $builder->addDefinition($this->prefix('widgets.manager'))
-			->setClass(Widgets\WidgetsManager::CLASSNAME, [
-				'repository'	=> $repository,
-				'installer'		=> $installer
-			])
+		$builder->addDefinition($this->prefix('widgets.manager'))
+			->setClass(Widgets\WidgetsManager::CLASSNAME)
 			->addTag('cms.widgets');
 
-		// Register widgets extensions
-		foreach($repository->getPackages() as $packageEntity) {
-			// Store info about widget root folder
-			$packageEntity->setPath($repository->getPath() .'/'. $packageEntity->getName());
-
-			// Create extension name from package name
-			$extensionName = $packageEntity->getExtensionName();
-
-			// Check if widget is already initialized
-			if (array_key_exists($extensionName, $this->compiler->getExtensions())) {
-				throw new Exceptions\WidgetLoadException(sprintf('Widget already loaded %s.', $packageEntity->getName()));
-			}
-
-			// Try to find widget definition file
-			if (!file_exists($packageEntity->getPath() . DIRECTORY_SEPARATOR .'widget.neon')) {
-				throw new Exceptions\WidgetLoadException(sprintf('Widget definition does not exist (%s).', $packageEntity->getPath()));
-			}
-
-			$definition = (!($definition = $this->loadFromFile($packageEntity->getPath() . DIRECTORY_SEPARATOR .'widget.neon')) || 1 === $definition) ? [] : $definition;
-			// Get extension class name for widget
-			$class = isset($definition['extension']) ? $definition['extension'] : 'IPub\Widgets\WidgetExtension';
-
-			// Register widget extension
-			$this->compiler->addExtension($extensionName, new $class($packageEntity, $definition));
-
-			// Assign widget package to manager
-			$widgetsManager->addSetup('addPackage', [$packageEntity]);
-		}
-
-		// Widgets manager
+		// Widgets filter manager
 		$filtersManager = $builder->addDefinition($this->prefix('filters.manager'))
 			->setClass(Widgets\FiltersManager::CLASSNAME)
 			->addTag('cms.widgets');
 
 		// Register widget filters
-		$filtersManager->addSetup('register', array('priority', Filter\PriorityFilter::CLASSNAME));
-		$filtersManager->addSetup('register', array('status', Filter\StatusFilter::CLASSNAME, 16));
+		$filtersManager->addSetup('register', ['priority', Filter\PriorityFilter::CLASSNAME]);
+		$filtersManager->addSetup('register', ['status', Filter\StatusFilter::CLASSNAME, 16]);
 
 		$builder->addDefinition($this->prefix('widgets.component'))
 			->setClass(Components\Control::CLASSNAME)
-			->setImplement(Components\IControl::CLASSNAME)
+			->setImplement(Components\IControl::INTERFACENAME)
 			->setArguments([new Nette\PhpGenerator\PhpLiteral('$position')])
 			->setInject(TRUE)
 			->addTag('cms.widgets');
@@ -132,7 +86,7 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 			->setImplement(Decorators\Raw\IControl::CLASSNAME)
 			->setInject(TRUE)
 			->addTag('cms.widgets')
-			->addTag(self::TAG_DECORATOR);
+			->addTag(self::TAG_WIDGET_DECORATOR);
 	}
 
 	public function beforeCompile()
@@ -144,37 +98,34 @@ class WidgetsExtension extends DI\Extensions\ExtensionsExtension
 		$service = $builder->getDefinition($this->prefix('widgets.manager'));
 
 		// Get all registered widgets components
-		foreach ($builder->findByTag(self::TAG_WIDGET) as $serviceName => $groups) {
+		foreach ($builder->findByTag(self::TAG_WIDGET_CONTROL) as $serviceName => $groups) {
 			// Check for valid group format
 			$groups = is_array($groups) ? $groups : (is_string($groups) ? [$groups] : ['default']);
 
 			// Register widget to manager and group
-			foreach($groups as $group) {
-				$service->addSetup('register', ['@' . $serviceName, $group]);
+			foreach ($groups as $group) {
+				$service->addSetup('register', ['@' . $serviceName, $serviceName, $group]);
 			}
 		}
 
-		// Get widgets manager
+		// Get widgets decorators manager
 		$service = $builder->getDefinition($this->prefix('decorators.manager'));
 
 		// Get all registered widgets decorators
-		foreach (array_keys($builder->findByTag(self::TAG_DECORATOR)) as $serviceName) {
+		foreach (array_keys($builder->findByTag(self::TAG_WIDGET_DECORATOR)) as $serviceName) {
 			// Register decorator to manager
-			$service->addSetup('register', ['@' .$serviceName]);
+			$service->addSetup('register', ['@' . $serviceName, $serviceName]);
 		}
 
-		// Get menu provider
+		// Get widgets control provider
 		$service = $builder->getDefinition($this->prefix('widgets.component'));
 
-		// Check all extensions and search for menu items provider
-		foreach ($this->compiler->getExtensions() as $extension) {
-			if (!$extension instanceof IWidgetsProvider) {
-				continue;
-			}
-
-			// Get menu groups & items from extension
-			foreach($extension->getWidgets() as $group => $widgets) {
-				foreach($widgets as $id => $properties) {
+		// Search for widgets provider extensions
+		/** @var IWidgetsProvider $extension */
+		foreach ($this->compiler->getExtensions(IWidgetsProvider::INTERFACENAME) as $extension) {
+			// Get widget groups & widgets from extension
+			foreach ($extension->getWidgets() as $group => $widgets) {
+				foreach ($widgets as $id => $properties) {
 					if (!isset($properties['priority'])) {
 						$properties['priority'] = 100;
 					}

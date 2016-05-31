@@ -2,14 +2,14 @@
 /**
  * Control.php
  *
- * @copyright	Vice v copyright.php
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Components
- * @since		5.0
+ * @copyright      Vice v copyright.php
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Components
+ * @since          1.0.0
  *
- * @date		24.07.13
+ * @date           24.07.13
  */
 
 namespace IPub\Widgets\Components;
@@ -27,18 +27,22 @@ use IPub\Widgets\Exceptions;
 use IPub\Widgets\Widgets;
 
 use IPub\Widgets\WidgetsManager;
-use IPub\Widgets\DecoratorsManager;
 use IPub\Widgets\FiltersManager;
+use IPub\Widgets\DecoratorsManager;
+
+use IPub\Packages;
 
 /**
  * Widgets container control definition
  *
- * @package		iPublikuj:Widgets!
- * @subpackage	Components
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Components
+ *                 
+ * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
  * @method onAttached(Nette\Application\UI\Control $component)
  *
- * @property-read Application\UI\ITemplate $template
+ * @property Application\UI\ITemplate $template
  */
 class Control extends IPub\Widgets\Application\UI\BaseControl
 {
@@ -152,8 +156,8 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 				$dir = dirname($this->getReflection()->getFileName());
 
 				// ...try to get base component template file
-				$templatePath = $this->templatePath !== NULL && file_exists($this->templatePath) ? $this->templatePath : $dir . DIRECTORY_SEPARATOR .'template'. DIRECTORY_SEPARATOR .'default.latte';
-				$this->template->setFile($templatePath);
+				$templateFile = $this->templateFile !== NULL && is_file($this->templateFile) ? $this->templateFile : $dir . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'default.latte';
+				$this->template->setFile($templateFile);
 			}
 
 			// Render component template
@@ -169,8 +173,6 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @param string $decorator
 	 *
-	 * @return $this
-	 *
 	 * @throws Exceptions\DecoratorNotRegisteredException
 	 */
 	public function setDecorator($decorator)
@@ -183,22 +185,16 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		} else {
 			throw new Exceptions\DecoratorNotRegisteredException(sprintf('Widgets decorator: "%s" is not registered.', $decorator));
 		}
-
-		return $this;
 	}
 
 	/**
 	 * Set widgets group
 	 *
 	 * @param string $group
-	 *
-	 * @return $this
 	 */
 	public function setGroup($group)
 	{
 		$this->group = (string) $group;
-
-		return $this;
 	}
 
 	/**
@@ -219,12 +215,12 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	public function getWidgets()
 	{
 		if (
-			$container = $this->getComponent('widgets')->getComponent($this->group, FALSE)
-			AND $positionContainer = $container->getComponent($this->position, FALSE)
-			AND $widgets = $positionContainer->getComponents()
+			($container = $this->getComponent('widgets')->getComponent($this->group, FALSE))
+			&& ($positionContainer = $container->getComponent($this->position, FALSE))
+			&& ($widgets = $positionContainer->getComponents())
 		) {
 			// Apply widgets filters
-			foreach ($this->filtersManager as $priority=>$filters) {
+			foreach ($this->filtersManager as $priority => $filters) {
 				foreach ($filters as $class) {
 					$widgets = new $class($widgets, [
 						'access' => TRUE,
@@ -248,8 +244,6 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * @param string|null $group
 	 * @param string|null $position
 	 *
-	 * @return $this
-	 *
 	 * @throws Exceptions\WidgetNotRegisteredException
 	 * @throws Exceptions\InvalidStateException
 	 */
@@ -272,6 +266,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 
 		// Check container exist
 		$container = $this->getComponent('widgets')->getComponent($group, FALSE);
+
 		if (!$container) {
 			$this->getComponent('widgets')->addComponent(new Nette\ComponentModel\Container, $group);
 			$container = $this->getComponent('widgets')->getComponent($group);
@@ -279,6 +274,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 
 		// Check container exist
 		$positionContainer = $container->getComponent($position, FALSE);
+
 		if (!$positionContainer) {
 			$container->addComponent(new Nette\ComponentModel\Container, $position);
 			$positionContainer = $container->getComponent($position);
@@ -289,8 +285,6 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 
 		// Add widget component to container/position
 		$positionContainer->addComponent($widget, ($widget->getName() . spl_object_hash($data)));
-
-		return $this;
 	}
 
 	/**
@@ -302,19 +296,19 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @throws Exceptions\InvalidStateException
 	 */
-	protected function createData($data)
+	private function createData($data)
 	{
 		// Data are in required object
 		if ($data instanceof Entities\IData) {
 			return $data;
 
 		// or data are in array
-		} else if (is_array($data)) {
+		} elseif (is_array($data)) {
 			// Create new data object
 			return (new Entities\Data($data));
 
 		// or data are in ArrayHash object
-		} else if ($data instanceof Utils\ArrayHash) {
+		} elseif ($data instanceof Utils\ArrayHash) {
 			// Create new data object
 			return (new Entities\Data((array) $data));
 		}

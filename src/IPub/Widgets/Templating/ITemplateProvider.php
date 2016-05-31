@@ -2,14 +2,14 @@
 /**
  * ITemplateProvider.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Templating
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Templating
+ * @since          1.0.0
  *
- * @date		17.09.14
+ * @date           17.09.14
  */
 
 namespace IPub\Widgets\Templating;
@@ -21,19 +21,19 @@ interface ITemplateProvider
 	 *
 	 * @return string
 	 */
-	public function getWidgetTemplatePath();
+	public function getWidgetTemplateFile();
 
 	/**
 	 * Provide widget decorator template path
 	 *
 	 * @return string
 	 */
-	public function getDecoratorTemplatePath();
+	public function getDecoratorTemplateFile();
 
 	/**
 	 * Provide widget container template path
 	 *
 	 * @return string
 	 */
-	public function getContainerTemplatePath();
+	public function getContainerTemplateFile();
 }

@@ -2,41 +2,33 @@
 /**
  * WidgetsManager.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	common
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     common
+ * @since          1.0.0
  *
- * @date		16.09.14
+ * @date           16.09.14
  */
 
 namespace IPub\Widgets;
 
-use IPub\Packages;
+use Nette;
 
-class WidgetsManager extends Packages\PackagesManager
+use IPub;
+use IPub\Widgets\Widgets;
+
+final class WidgetsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
 	const CLASSNAME = __CLASS__;
 
 	/**
-	 * @var Widgets\IFactory[]
+	 * @var Widgets\IFactory[][]
 	 */
-	protected $widgets = [
+	private $widgets = [
 		'default' => []
 	];
-
-	/**
-	 * @param Packages\Repository\IInstalledRepository $repository
-	 * @param Packages\Installers\IInstaller $installer
-	 */
-	public function __construct(
-		Packages\Repository\IInstalledRepository $repository,
-		Packages\Installers\IInstaller $installer
-	) {
-		parent::__construct($repository, $installer);
-	}
 
 	/**
 	 * Checks whether a widget is registered
@@ -73,21 +65,17 @@ class WidgetsManager extends Packages\PackagesManager
 	 * Helper method for widgets factories registering
 	 *
 	 * @param Widgets\IFactory $factory
+	 * @param string $type
 	 * @param string $group
 	 *
 	 * @return $this
 	 */
-	public function register(Widgets\IFactory $factory, $group = 'default')
+	public function register(Widgets\IFactory $factory, $type, $group = 'default')
 	{
-		// Get widget type
-		$type = $factory::WIDGET_TYPE;
-
 		// Check if widget is already registered
 		if (!$this->has($type, $group)) {
 			$this->widgets[$group][$type] = $factory;
 		}
-
-		return $this;
 	}
 
 	/**
@@ -117,7 +105,7 @@ class WidgetsManager extends Packages\PackagesManager
 	 *
 	 * @param string $offset
 	 *
-	 * @return Widgets\IFactory
+	 * @return Widgets\IFactory[]
 	 */
 	public function offsetGet($offset)
 	{
@@ -128,28 +116,20 @@ class WidgetsManager extends Packages\PackagesManager
 	 * Implements the \ArrayAccess
 	 *
 	 * @param string $offset
-	 * @param Packages\Entities\IPackage $value
-	 *
-	 * @return $this
+	 * @param Widgets\IFactory[]|NULL $value
 	 */
 	public function offsetSet($offset, $value)
 	{
 		$this->widgets[$offset] = $value;
-
-		return $this;
 	}
 
 	/**
 	 * Implements the \ArrayAccess
 	 *
 	 * @param string $offset
-	 *
-	 * @return $this
 	 */
 	public function offsetUnset($offset)
 	{
 		unset($this->widgets[$offset]);
-
-		return $this;
 	}
 }
