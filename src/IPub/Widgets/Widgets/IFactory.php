@@ -30,7 +30,7 @@ interface IFactory
 	/**
 	 * @param Entities\IData $data
 	 *
-	 * @return null
+	 * @return NULL
 	 */
 	public function create(Entities\IData $data);
 }

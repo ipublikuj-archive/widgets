@@ -90,7 +90,7 @@ abstract class BaseControl extends Application\UI\Control
 	}
 
 	/**
-	 * @return Localization\ITranslator|null
+	 * @return Localization\ITranslator|NULL
 	 */
 	public function getTranslator()
 	{

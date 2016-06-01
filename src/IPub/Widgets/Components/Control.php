@@ -92,7 +92,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * @param DecoratorsManager $decoratorsManager
 	 * @param FiltersManager $filtersManager
 	 * @param ComponentModel\IContainer $parent
-	 * @param null $name
+	 * @param NULL $name
 	 */
 	public function __construct(
 		$position = 'default',
@@ -244,8 +244,8 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @param string $name
 	 * @param array $data
-	 * @param string|null $group
-	 * @param string|null $position
+	 * @param string|NULL $group
+	 * @param string|NULL $position
 	 *
 	 * @throws Exceptions\WidgetNotRegisteredException
 	 * @throws Exceptions\InvalidStateException

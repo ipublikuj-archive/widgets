@@ -48,7 +48,7 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 *
 	 * @param string $name
 	 *
-	 * @return Decorators\IFactory|null
+	 * @return Decorators\IFactory|NULL
 	 */
 	public function get($name)
 	{
