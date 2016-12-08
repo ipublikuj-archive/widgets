@@ -12,6 +12,8 @@
  * @date           18.06.15
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets;
 
 use Nette;

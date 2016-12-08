@@ -6,26 +6,31 @@
  * @license        http://www.ipublikuj.eu
  * @author         Adam Kadlec http://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
- * @subpackage     common
+ * @subpackage     Managers
  * @since          1.0.0
  *
  * @date           16.06.15
  */
 
-namespace IPub\Widgets;
+declare(strict_types = 1);
+
+namespace IPub\Widgets\Managers;
 
 use Nette;
 
 use IPub;
 use IPub\Widgets\Decorators;
 
+/**
+ * Registered widgets decorators manager
+ *
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Managers
+ *
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ */
 final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
-	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
-
 	/**
 	 * @var Decorators\IFactory[]
 	 */
@@ -38,7 +43,7 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 *
 	 * @return boolean
 	 */
-	public function has($name)
+	public function has(string $name) : bool
 	{
 		return isset($this->decorators[$name]);
 	}
@@ -50,7 +55,7 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 *
 	 * @return Decorators\IFactory|NULL
 	 */
-	public function get($name)
+	public function get(string $name)
 	{
 		return $this->has($name) ? $this->decorators[$name] : NULL;
 	}
@@ -61,7 +66,7 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 * @param Decorators\IFactory $decorator
 	 * @param string $name
 	 */
-	public function register(Decorators\IFactory $decorator, $name)
+	public function register(Decorators\IFactory $decorator, string $name)
 	{
 		$this->unregister($name);
 
@@ -75,7 +80,7 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 *
 	 * @param string $name
 	 */
-	public function unregister($name)
+	public function unregister(string $name)
 	{
 		if (array_key_exists($name, $this->decorators)) {
 			unset($this->decorators[$name]);

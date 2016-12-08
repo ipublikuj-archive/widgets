@@ -6,26 +6,31 @@
  * @license        http://www.ipublikuj.eu
  * @author         Adam Kadlec http://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
- * @subpackage     common
+ * @subpackage     Managers
  * @since          1.0.0
  *
  * @date           16.09.14
  */
 
-namespace IPub\Widgets;
+declare(strict_types = 1);
+
+namespace IPub\Widgets\Managers;
 
 use Nette;
 
 use IPub;
 use IPub\Widgets\Widgets;
 
+/**
+ * Registered widgets manager
+ *
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Managers
+ *
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ */
 final class WidgetsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
 {
-	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
-
 	/**
 	 * @var Widgets\IFactory[][]
 	 */
@@ -41,9 +46,9 @@ final class WidgetsManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 *
 	 * @return bool
 	 */
-	public function has($type, $group = 'default')
+	public function has(string $type, string $group = 'default'): bool
 	{
-		return isset($this->widgets[(string) $group]) && isset($this->widgets[(string) $group][(string) $type]);
+		return isset($this->widgets[$group]) && isset($this->widgets[$group][$type]);
 	}
 
 	/**
@@ -54,7 +59,7 @@ final class WidgetsManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 *
 	 * @return Widgets\IFactory|NULL
 	 */
-	public function get($type, $group = 'default')
+	public function get(string $type, string $group = 'default')
 	{
 		// Check if widget exists or not...
 		if ($this->has($type, $group)) {
@@ -70,10 +75,8 @@ final class WidgetsManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 * @param Widgets\IFactory $factory
 	 * @param string $type
 	 * @param string $group
-	 *
-	 * @return $this
 	 */
-	public function register(Widgets\IFactory $factory, $type, $group = 'default')
+	public function register(Widgets\IFactory $factory, string $type, string $group = 'default')
 	{
 		// Check if widget is already registered
 		if (!$this->has($type, $group)) {

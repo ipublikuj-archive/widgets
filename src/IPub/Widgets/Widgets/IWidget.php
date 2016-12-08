@@ -12,6 +12,8 @@
  * @date           15.09.14
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Widgets;
 
 use IPub;
@@ -24,59 +26,42 @@ use IPub\Widgets\Entities;
  * @package        iPublikuj:Widgets!
  * @subpackage     Widgets
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-interface IControl
+interface IWidget
 {
-	/**
-	 * Set widget display data
-	 *
-	 * @param Entities\IData $data
-	 */
-	public function setData(Entities\IData $data);
-
 	/**
 	 * Get current widget name
 	 *
 	 * @return string
-	 *
-	 * @throws \LogicException
 	 */
-	public function getName();
+	function getName();
 
 	/**
 	 * Get current widget description
 	 *
 	 * @return string
-	 *
-	 * @throws \LogicException
 	 */
-	public function getDescription();
+	function getDescription();
 
 	/**
 	 * Get current widget priority
 	 *
 	 * @return int
-	 *
-	 * @throws \LogicException
 	 */
-	public function getPriority();
+	function getPriority();
 
 	/**
 	 * Get current widget status
 	 *
 	 * @return int
-	 *
-	 * @throws \LogicException
 	 */
-	public function getStatus();
+	function getStatus();
 
 	/**
 	 * Get current widget position name
 	 *
 	 * @return string
-	 *
-	 * @throws \LogicException
 	 */
-	public function getPosition();
+	function getPosition();
 }

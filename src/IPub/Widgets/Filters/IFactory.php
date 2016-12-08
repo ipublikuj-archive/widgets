@@ -1,35 +1,30 @@
 <?php
 /**
- * IWidgetsProvider.php
+ * IFactory.php
  *
  * @copyright      More in license.md
  * @license        http://www.ipublikuj.eu
  * @author         Adam Kadlec http://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
- * @subpackage     DI
+ * @subpackage     Filters
  * @since          1.0.0
  *
- * @date           22.06.15
+ * @date           18.06.15
  */
 
 declare(strict_types = 1);
 
-namespace IPub\Widgets\DI;
+namespace IPub\Widgets\Filters;
 
 /**
- * Widgets extension interface for providing list of installed widgets
+ * Widgets filters factory definition
  *
  * @package        iPublikuj:Widgets!
- * @subpackage     DI
+ * @subpackage     Filters
  *
  * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-interface IWidgetsProvider
+interface IFactory
 {
-	/**
-	 * Return array of widgets
-	 *
-	 * @return array
-	 */
-	function getWidgets();
+
 }

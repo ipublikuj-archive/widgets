@@ -10,9 +10,7 @@ The best way to install ipub/widgets is using  [Composer](http://getcomposer.org
 $ composer require ipub/widgets
 ```
 
-### Classic assignment into application without package support
-
-If you don't want to use widgets in packages, you can install this extension in normal way
+After that you have to register extension in config.neon.
 
 ```neon
 extensions:
@@ -25,12 +23,12 @@ extensions:
 
 Widget is special type of component. So you can create component as usual, but you have to use widget base control class
 
-So now create basic component:
+So now create component as usual:
 
 ```php
 use IPub\Widgets\Widgets;
 
-class Control extends Widgets\Control implements Widgets\IControl
+class SuperCoolWidget extends Widgets\Component implements Widgets\IWidget
 {
 
 }
@@ -42,14 +40,14 @@ And its [factory](http://pla.nette.org/cs/create-components-with-autowiring) (in
 use IPub\Widgets\Widgets;
 use IPub\Widgets\Entities;
 
-interface IControl extends Widgets\IFactory
+interface ISuperCoolWidgetFactory extends Widgets\IFactory
 {
 	/**
-	 * @param Entities\IData $data
+	 * @param Entities\IData|array $data
 	 *
-	 * @return Control
+	 * @return SuperCoolWidget
 	 */
-	public function create(Entities\IData $data);
+	public function create($data);
 }
 ```
 
@@ -58,8 +56,8 @@ Now you have to register this component in your application. You can do it in yo
 ```php
 services:
 	yourWidgetName:
-		class: Your\Namespace\Widgets\Control
-		implement: Your\Namespace\Widgets\IControl
+		class: Your\Namespace\Widgets\SuperCoolWidget
+		implement: Your\Namespace\Widgets\ISuperCoolWidgetFactory
 		inject: true
 		tags: [ipub.widgets.widget]
 ```
@@ -70,7 +68,7 @@ And that is all for basic setup. This widget is now registered in widget manager
 
 ### Configuring widget
 
-All widgets have to be configured before they could be rendered on you page. This configuration must have some mandatory fields:
+All widgets have to be configured before they could be rendered on your page. This configuration must have some mandatory fields:
 
 * **widget title**
 * **widget description** for describing widget content.

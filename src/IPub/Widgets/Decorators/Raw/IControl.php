@@ -12,6 +12,8 @@
  * @date           18.06.15
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Decorators\Raw;
 
 use IPub;
@@ -23,17 +25,12 @@ use IPub\Widgets\Decorators;
  * @package        iPublikuj:Widgets!
  * @subpackage     Decorators
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
 interface IControl extends Decorators\IFactory
 {
 	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
-
-	/**
 	 * @return Control
 	 */
-	public function create();
+	public function create() : Control;
 }

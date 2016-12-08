@@ -1,37 +1,34 @@
 <?php
 /**
- * StatusFilter.php
+ * Filter.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:Widgets!
- * @subpackage	Filter
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        http://www.ipublikuj.eu
+ * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @package        iPublikuj:Widgets!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		26.06.15
+ * @date           26.06.15
  */
 
-namespace IPub\Widgets\Filter;
+declare(strict_types = 1);
 
-use Nette;
-use Nette\Application;
+namespace IPub\Widgets\Filters\Status;
+
+use IPub;
+use IPub\Widgets\Filters;
 
 /**
  * Widgets status filter
  *
  * @package        iPublikuj:Widgets!
- * @subpackage     Filter
+ * @subpackage     Filters
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-class StatusFilter extends FilterIterator
+class Filter extends Filters\FilterIterator
 {
-	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
-
 	/**
 	 * @var integer
 	 */

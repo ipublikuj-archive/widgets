@@ -1,42 +1,40 @@
 <?php
 /**
- * PriorityFilter.php
+ * Filter.php
  *
  * @copyright      More in license.md
  * @license        http://www.ipublikuj.eu
  * @author         Adam Kadlec http://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
- * @subpackage     Filter
+ * @subpackage     Filters
  * @since          1.0.0
  *
  * @date           26.06.15
  */
 
-namespace IPub\Widgets\Filter;
+declare(strict_types = 1);
 
-use Nette;
-use Nette\Application;
+namespace IPub\Widgets\Filters\Priority;
+
+use IPub;
+use IPub\Widgets\Filters;
 
 /**
  * Widgets priority filter
  *
  * @package        iPublikuj:Widgets!
- * @subpackage     Filter
+ * @subpackage     Filters
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-class PriorityFilter extends FilterIterator
+class Filter extends Filters\FilterIterator
 {
-	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
-
 	/**
 	 * {@inheritdoc}
 	 */
 	public function __construct(\Iterator $iterator, array $options = [])
 	{
+		/** @var  $elements */
 		$elements = iterator_to_array($iterator, FALSE);
 
 		$iterator->uasort(function ($a, $b) use ($elements) {

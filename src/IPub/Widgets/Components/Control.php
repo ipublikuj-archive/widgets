@@ -12,6 +12,8 @@
  * @date           24.07.13
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Components;
 
 use Nette;
@@ -24,13 +26,8 @@ use IPub;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
+use IPub\Widgets\Managers;
 use IPub\Widgets\Widgets;
-
-use IPub\Widgets\WidgetsManager;
-use IPub\Widgets\FiltersManager;
-use IPub\Widgets\DecoratorsManager;
-
-use IPub\Packages;
 
 /**
  * Widgets container control definition
@@ -38,36 +35,31 @@ use IPub\Packages;
  * @package        iPublikuj:Widgets!
  * @subpackage     Components
  *                 
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  *
- * @method onAttached(Nette\Application\UI\Control $component)
+ * @method onAttached(Application\UI\Control $component)
  *
  * @property Application\UI\ITemplate $template
  */
 class Control extends IPub\Widgets\Application\UI\BaseControl
 {
 	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
-
-	/**
 	 * @var array
 	 */
 	public $onAttached = [];
 
 	/**
-	 * @var WidgetsManager
+	 * @var Managers\WidgetsManager
 	 */
 	protected $widgetsManager;
 
 	/**
-	 * @var DecoratorsManager
+	 * @var Managers\DecoratorsManager
 	 */
 	protected $decoratorsManager;
 
 	/**
-	 * @var FiltersManager
+	 * @var Managers\FiltersManager
 	 */
 	protected $filtersManager;
 
@@ -88,21 +80,21 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 
 	/**
 	 * @param string $position
-	 * @param WidgetsManager $widgetsManager
-	 * @param DecoratorsManager $decoratorsManager
-	 * @param FiltersManager $filtersManager
+	 * @param Managers\WidgetsManager $widgetsManager
+	 * @param Managers\DecoratorsManager $decoratorsManager
+	 * @param Managers\FiltersManager $filtersManager
 	 * @param ComponentModel\IContainer $parent
-	 * @param NULL $name
+	 * @param string|NULL $name
 	 */
 	public function __construct(
-		$position = 'default',
-		WidgetsManager $widgetsManager,
-		DecoratorsManager $decoratorsManager,
-		FiltersManager $filtersManager,
-		ComponentModel\IContainer $parent = NULL, $name = NULL
+		string $position = 'default',
+		Managers\WidgetsManager $widgetsManager,
+		Managers\DecoratorsManager $decoratorsManager,
+		Managers\FiltersManager $filtersManager,
+		ComponentModel\IContainer $parent = NULL,
+		string $name = NULL
 	) {
-		// TODO: remove, only for tests
-		parent::__construct(NULL, NULL);
+		parent::__construct($parent, $name);
 
 		// Store info about widgets position
 		$this->position = $position;
@@ -146,7 +138,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		// Check if control has template
 		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
 			// Assign vars to template
-			$this->template->widgets = $this->getWidgets();
+			$this->template->add('widgets', $this->getWidgets());
 
 			// Check if translator is available
 			if ($this->getTranslator() instanceof Localization\ITranslator) {
@@ -178,10 +170,10 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @throws Exceptions\DecoratorNotRegisteredException
 	 */
-	public function setDecorator($decorator)
+	public function setDecorator(string $decorator)
 	{
 		// Try to find decorator factory
-		if ($factory = $this->decoratorsManager->get((string) $decorator)) {
+		if ($factory = $this->decoratorsManager->get($decorator)) {
 			// Register decorator component
 			$this->addComponent($factory->create(), 'decorator');
 
@@ -195,9 +187,9 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @param string $group
 	 */
-	public function setGroup($group)
+	public function setGroup(string $group)
 	{
-		$this->group = (string) $group;
+		$this->group = $group;
 	}
 
 	/**
@@ -205,7 +197,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @return string
 	 */
-	public function getGroup()
+	public function getGroup() : string
 	{
 		return $this->group;
 	}
@@ -223,14 +215,12 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 			&& ($widgets = $positionContainer->getComponents())
 		) {
 			// Apply widgets filters
-			foreach ($this->filtersManager as $priority => $filters) {
-				foreach ($filters as $class) {
-					$widgets = new $class($widgets, [
+			foreach ($this->filtersManager as $filter) {
+					$widgets = $filter->create($widgets, [
 						'access' => TRUE,
 						'active' => TRUE,
 						'status' => 1,
 					]);
-				}
 			}
 
 			return $widgets;
@@ -250,7 +240,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * @throws Exceptions\WidgetNotRegisteredException
 	 * @throws Exceptions\InvalidStateException
 	 */
-	public function addWidget($name, array $data = [], $group = NULL, $position = NULL)
+	public function addWidget(string $name, array $data = [], string $group = NULL, string $position = NULL)
 	{
 		if ($position === NULL) {
 			$position = $this->position;
@@ -299,7 +289,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @throws Exceptions\InvalidStateException
 	 */
-	private function createData($data)
+	private function createData($data) : Entities\IData
 	{
 		// Data are in required object
 		if ($data instanceof Entities\IData) {

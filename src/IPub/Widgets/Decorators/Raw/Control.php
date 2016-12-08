@@ -12,6 +12,8 @@
  * @date           18.06.15
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Decorators\Raw;
 
 use Nette;
@@ -26,12 +28,9 @@ use IPub\Widgets\Decorators;
  * @package        iPublikuj:Widgets!
  * @subpackage     Decorators
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
 class Control extends Decorators\Decorator
 {
-	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
+
 }

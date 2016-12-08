@@ -12,6 +12,8 @@
  * @date           24.07.13
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Application\UI;
 
 use Nette;
@@ -27,7 +29,7 @@ use IPub\Widgets\Exceptions;
  * @package        iPublikuj:Widgets!
  * @subpackage     Application
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  *
  * @property Application\UI\ITemplate $template
  */

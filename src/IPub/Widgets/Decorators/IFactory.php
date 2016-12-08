@@ -12,6 +12,8 @@
  * @date           18.06.15
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Decorators;
 
 /**
@@ -20,12 +22,9 @@ namespace IPub\Widgets\Decorators;
  * @package        iPublikuj:Widgets!
  * @subpackage     Decorators
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
 interface IFactory
 {
-	/**
-	 * @return Decorator
-	 */
-	public function create();
+
 }

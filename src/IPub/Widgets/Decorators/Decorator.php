@@ -12,6 +12,8 @@
  * @date           18.06.15
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Decorators;
 
 use Nette;
@@ -29,16 +31,16 @@ use IPub\Widgets\Exceptions;
  * @package        iPublikuj:Widgets!
  * @subpackage     Decorators
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  *
  * @property Application\UI\ITemplate $template
  */
 abstract class Decorator extends Widgets\Application\UI\BaseControl implements Decorators\IDecorator
 {
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
-	public function render(Widgets\Widgets\IControl $widget)
+	public function render(Widgets\Widgets\IWidget $widget)
 	{
 		// Check if control has template
 		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {

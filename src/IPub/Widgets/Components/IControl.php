@@ -12,6 +12,8 @@
  * @date           24.07.13
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Components;
 
 /**
@@ -20,19 +22,14 @@ namespace IPub\Widgets\Components;
  * @package        iPublikuj:Widgets!
  * @subpackage     Components
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
 interface IControl
 {
-	/**
-	 * Define interface name
-	 */
-	const INTERFACE_NAME = __CLASS__;
-
 	/**
 	 * @param string $position
 	 *
 	 * @return Control
 	 */
-	function create($position = 'default');
+	function create(string $position = 'default') : Control;
 }

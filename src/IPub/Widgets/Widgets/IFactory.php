@@ -12,6 +12,8 @@
  * @date           17.09.14
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\Widgets;
 
 use IPub;
@@ -23,14 +25,9 @@ use IPub\Widgets\Entities;
  * @package        iPublikuj:Widgets!
  * @subpackage     Widgets
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
 interface IFactory
 {
-	/**
-	 * @param Entities\IData $data
-	 *
-	 * @return NULL
-	 */
-	public function create(Entities\IData $data);
+
 }

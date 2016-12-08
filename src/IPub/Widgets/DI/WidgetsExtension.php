@@ -12,10 +12,14 @@
  * @date           15.09.14
  */
 
+declare(strict_types = 1);
+
 namespace IPub\Widgets\DI;
 
 use Nette;
 use Nette\DI;
+use Nette\PhpGenerator as Code;
+use Nette\Security as NS;
 use Nette\Utils;
 
 use IPub;
@@ -23,7 +27,7 @@ use IPub\Widgets;
 use IPub\Widgets\Components;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Exceptions;
-use IPub\Widgets\Filter;
+use IPub\Widgets\Filters;
 
 /**
  * Widgets extension container
@@ -31,15 +35,18 @@ use IPub\Widgets\Filter;
  * @package        iPublikuj:Widgets!
  * @subpackage     DI
  *
- * @author         Adam Kadlec <adam.kadlec@fastybird.com>
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-class WidgetsExtension extends DI\CompilerExtension
+final class WidgetsExtension extends DI\CompilerExtension
 {
 	// Define tag string for widgets
 	const TAG_WIDGET_CONTROL = 'ipub.widgets.widget';
 
 	// Define tag string for widgets decorators
 	const TAG_WIDGET_DECORATOR = 'ipub.widgets.decorator';
+
+	// Define tag string for widgets decorators
+	const TAG_WIDGET_FILTER = 'ipub.widgets.filter';
 
 	public function loadConfiguration()
 	{
@@ -52,24 +59,40 @@ class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets manager
 		$builder->addDefinition($this->prefix('widgets.manager'))
-			->setClass(Widgets\WidgetsManager::CLASS_NAME)
+			->setClass(Widgets\Managers\WidgetsManager::class)
 			->addTag('cms.widgets');
-
-		// Widgets filter manager
-		$filtersManager = $builder->addDefinition($this->prefix('filters.manager'))
-			->setClass(Widgets\FiltersManager::CLASS_NAME)
-			->addTag('cms.widgets');
-
-		// Register widget filters
-		$filtersManager->addSetup('register', ['priority', Filter\PriorityFilter::CLASS_NAME]);
-		$filtersManager->addSetup('register', ['status', Filter\StatusFilter::CLASS_NAME, 16]);
 
 		$builder->addDefinition($this->prefix('widgets.component'))
-			->setClass(Components\Control::CLASS_NAME)
-			->setImplement(Components\IControl::INTERFACE_NAME)
-			->setArguments([new Nette\PhpGenerator\PhpLiteral('$position')])
+			->setClass(Components\Control::class)
+			->setImplement(Components\IControl::class)
+			->setArguments([new Code\PhpLiteral('$position')])
 			->setInject(TRUE)
 			->addTag('cms.widgets');
+
+		/**
+		 * Widgets filters
+		 */
+
+		// Widgets filter manager
+		$builder->addDefinition($this->prefix('filters.manager'))
+			->setClass(Widgets\Managers\FiltersManager::class)
+			->addTag('cms.widgets');
+
+		// Widgets priority filter
+		$builder->addDefinition('widgets.filters.priority')
+			->setClass(Filters\Priority\Filter::class)
+			->setImplement(Filters\Priority\IFilter::class)
+			->setInject(TRUE)
+			->addTag('cms.widgets')
+			->addTag(self::TAG_WIDGET_FILTER);
+
+		// Widgets status filter
+		$builder->addDefinition('widgets.filters.status')
+			->setClass(Filters\Status\Filter::class)
+			->setImplement(Filters\Status\IFilter::class)
+			->setInject(TRUE)
+			->addTag('cms.widgets')
+			->addTag(self::TAG_WIDGET_FILTER);
 
 		/**
 		 * Widgets decorators
@@ -77,25 +100,30 @@ class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets decorators manager
 		$builder->addDefinition($this->prefix('decorators.manager'))
-			->setClass(Widgets\DecoratorsManager::CLASS_NAME)
+			->setClass(Widgets\Managers\DecoratorsManager::class)
 			->addTag('cms.widgets');
 
 		// Widgets raw decorator
 		$builder->addDefinition('widgets.decorator.raw')
-			->setClass(Decorators\Raw\Control::CLASS_NAME)
-			->setImplement(Decorators\Raw\IControl::CLASS_NAME)
+			->setClass(Decorators\Raw\Control::class)
+			->setImplement(Decorators\Raw\IControl::class)
 			->setInject(TRUE)
 			->addTag('cms.widgets')
 			->addTag(self::TAG_WIDGET_DECORATOR);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function beforeCompile()
 	{
+		parent::beforeCompile();
+
 		// Get container builder
 		$builder = $this->getContainerBuilder();
 
 		// Get widgets manager
-		$service = $builder->getDefinition($this->prefix('widgets.manager'));
+		$widgetsManager = $builder->getDefinition($this->prefix('widgets.manager'));
 
 		// Get all registered widgets components
 		foreach ($builder->findByTag(self::TAG_WIDGET_CONTROL) as $serviceName => $groups) {
@@ -104,33 +132,57 @@ class WidgetsExtension extends DI\CompilerExtension
 
 			// Register widget to manager and group
 			foreach ($groups as $group) {
-				$service->addSetup('register', ['@' . $serviceName, $serviceName, $group]);
+				$widgetsManager->addSetup('register', ['@' . $serviceName, $serviceName, $group]);
 			}
 		}
 
 		// Get widgets decorators manager
-		$service = $builder->getDefinition($this->prefix('decorators.manager'));
+		$decoratorsManager = $builder->getDefinition($this->prefix('decorators.manager'));
 
 		// Get all registered widgets decorators
 		foreach (array_keys($builder->findByTag(self::TAG_WIDGET_DECORATOR)) as $serviceName) {
 			// Register decorator to manager
-			$service->addSetup('register', ['@' . $serviceName, $serviceName]);
+			$decoratorsManager->addSetup('register', ['@' . $serviceName, $serviceName]);
+		}
+
+		// Get widgets filters manager
+		$filtersManager = $builder->getDefinition($this->prefix('filters.manager'));
+
+		// Get all registered widgets decorators
+		foreach (array_keys($builder->findByTag(self::TAG_WIDGET_FILTER)) as $serviceName) {
+			$priority = 999;
+
+			// Register filter to manager
+			$filtersManager->addSetup('register', ['@' . $serviceName, $serviceName, $priority]);
 		}
 
 		// Get widgets control provider
-		$service = $builder->getDefinition($this->prefix('widgets.component'));
+		$widgetsContainer = $builder->getDefinition($this->prefix('widgets.component'));
 
 		// Search for widgets provider extensions
 		/** @var IWidgetsProvider $extension */
-		foreach ($this->compiler->getExtensions(IWidgetsProvider::INTERFACE_NAME) as $extension) {
+		foreach ($this->compiler->getExtensions(IWidgetsProvider::class) as $extension) {
 			// Get widget groups & widgets from extension
 			foreach ($extension->getWidgets() as $group => $widgets) {
 				foreach ($widgets as $id => $properties) {
+					if (!isset($properties['type'])) {
+						
+					}
+
+					if (!isset($properties['position'])) {
+						
+					}
+
+					$type = $properties['type'];
+					$position = $properties['position'];
+
+					unset($properties['type']);
+
 					if (!isset($properties['priority'])) {
 						$properties['priority'] = 100;
 					}
 
-					$service->addSetup('addWidget', [$properties['type'], $properties, $group, $properties['position']]);
+					$widgetsContainer->addSetup('addWidget', [$type, $properties, $group, $position]);
 				}
 			}
 		}
@@ -140,7 +192,7 @@ class WidgetsExtension extends DI\CompilerExtension
 	 * @param Nette\Configurator $config
 	 * @param string $extensionName
 	 */
-	public static function register(Nette\Configurator $config, $extensionName = 'widgets')
+	public static function register(Nette\Configurator $config, string $extensionName = 'widgets')
 	{
 		$config->onCompile[] = function (Nette\Configurator $config, Nette\DI\Compiler $compiler) use ($extensionName) {
 			$compiler->addExtension($extensionName, new WidgetsExtension());

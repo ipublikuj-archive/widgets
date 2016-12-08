@@ -20,11 +20,6 @@ use Nette\Utils;
 class Data extends Nette\Object implements IData
 {
 	/**
-	 * Define class name
-	 */
-	const CLASS_NAME = __CLASS__;
-
-	/**
 	 * @var string
 	 */
 	protected $title;
