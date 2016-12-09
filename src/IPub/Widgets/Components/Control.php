@@ -28,6 +28,7 @@ use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
 use IPub\Widgets\Managers;
 use IPub\Widgets\Widgets;
+use Tracy\Debugger;
 
 /**
  * Widgets container control definition
@@ -135,6 +136,13 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 */
 	public function render()
 	{
+		foreach (func_get_args() as $arg) {
+			// Check if decorator name is provided
+			if (is_string($arg)) {
+				$this->setDecorator($arg);
+			}
+		}
+
 		// Check if control has template
 		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
 			// Assign vars to template
@@ -174,6 +182,12 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	{
 		// Try to find decorator factory
 		if ($factory = $this->decoratorsManager->get($decorator)) {
+			// Check if some decorator is registered...
+			if ($component = $this->getComponent('decorator', FALSE)) {
+				// ... if yes, remove it
+				$this->removeComponent($component);
+			}
+
 			// Register decorator component
 			$this->addComponent($factory->create(), 'decorator');
 

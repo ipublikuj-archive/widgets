@@ -186,6 +186,10 @@ final class WidgetsExtension extends DI\CompilerExtension
 				}
 			}
 		}
+
+		// Install extension latte macros
+		$latteFactory = $builder->getDefinition($builder->getByType(Nette\Bridges\ApplicationLatte\ILatteFactory::class) ?: 'nette.latteFactory');
+		$latteFactory->addSetup('IPub\Widgets\Latte\Macros::install(?->getCompiler())', ['@self']);
 	}
 
 	/**

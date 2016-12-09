@@ -27,6 +27,7 @@ use IPub\Widgets;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
+use Tracy\Debugger;
 
 /**
  * Widgets control definition
@@ -172,8 +173,14 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 			$this->template->setTranslator($this->getTranslator());
 		}
 
+		$templateFile = $this->getTemplate()->getFile();
+
+		if (is_callable($templateFile)) {
+			$templateFile = call_user_func($templateFile);
+		}
+
 		// If template was not defined before...
-		if ($this->template->getFile() === NULL) {
+		if ($templateFile === NULL) {
 			// Get component actual dir
 			$dir = dirname($this->getReflection()->getFileName());
 
