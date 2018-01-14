@@ -20,6 +20,7 @@ use Nette;
 
 use IPub;
 use IPub\Widgets\Widgets;
+use Tracy\Debugger;
 
 /**
  * Registered widgets manager

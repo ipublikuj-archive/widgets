@@ -119,13 +119,13 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 		// If widget name has space...
 		$pos = mb_strpos($name, ' ');
 		if ($pos !== FALSE && mb_strpos($name, '||') === FALSE) {
-			$name = Utils\Html::el('span')
+			$title = Utils\Html::el('span')
 				->addAttributes(['class' => 'color'])
 				->setText(mb_substr($name, 0, $pos))
 				->render();
 
 			// Modify widget name
-			$name = $name . mb_substr($name, $pos);
+			$name = $title . mb_substr($name, $pos);
 		}
 
 		// If widget name has subtitle...
@@ -147,16 +147,14 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 
 		// Set badge if exists
 		if ($badge = $this->data->getBadge()) {
-			$badge = Utils\Html::el('span')
-				->addAttributes(['class' => 'badge badge-' . $badge])
-				->render();
+			$badge = Utils\Html::el('i')
+				->addAttributes(['class' => 'badge badge-' . $badge]);
 		}
 
 		// Set icon if exists
 		if ($icon = $this->data->getIcon()) {
-			$icon = Utils\Html::el('span')
-				->addAttributes(['class' => 'icon icon-' . $icon])
-				->render();
+			$icon = Utils\Html::el('i')
+				->addAttributes(['class' => 'ipub-icon ipub-icon-' . $icon]);
 		}
 
 		// Assign basic widget data to template

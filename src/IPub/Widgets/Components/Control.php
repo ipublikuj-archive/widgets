@@ -28,7 +28,6 @@ use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
 use IPub\Widgets\Managers;
 use IPub\Widgets\Widgets;
-use Tracy\Debugger;
 
 /**
  * Widgets container control definition
@@ -140,6 +139,14 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 			// Check if decorator name is provided
 			if (is_string($arg)) {
 				$this->setDecorator($arg);
+
+			} elseif (is_array($arg)) {
+				if (array_key_exists('group', $arg)) {
+					$this->setGroup($arg['group']);
+
+				} elseif (array_key_exists('decorator', $arg)) {
+					$this->setDecorator($arg['decorator']);
+				}
 			}
 		}
 
@@ -246,15 +253,17 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	/**
 	 * Add widget to container
 	 *
-	 * @param string $name
+	 * @param string|Widgets\IFactory $name
 	 * @param array $data
 	 * @param string|NULL $group
 	 * @param string|NULL $position
 	 *
+	 * @return Widgets\IWidget
+	 *
 	 * @throws Exceptions\WidgetNotRegisteredException
 	 * @throws Exceptions\InvalidStateException
 	 */
-	public function addWidget(string $name, array $data = [], string $group = NULL, string $position = NULL)
+	public function addWidget($name, array $data = [], string $group = NULL, string $position = NULL) : Widgets\IWidget
 	{
 		if ($position === NULL) {
 			$position = $this->position;
@@ -267,8 +276,16 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		// Prepare widget settings data
 		$data = $this->createData($data);
 
-		if (!$factory = $this->widgetsManager->get($name, $group)) {
-			throw new Exceptions\WidgetNotRegisteredException(sprintf('Widget of type "%s" in group "%s" is not registered.', $name, $group));
+		if (is_string($name)) {
+			if (!$factory = $this->widgetsManager->get($name, $group)) {
+				throw new Exceptions\WidgetNotRegisteredException(sprintf('Widget of type "%s" in group "%s" is not registered.', $name, $group));
+			}
+
+		} elseif (!$name instanceof Widgets\IFactory) {
+			throw new Exceptions\InvalidArgumentException(sprintf('Provided service is not valid widgets factory service. Instance of IPub\Widgets\Widgets\IFactory expected, instance of %s provided', get_class($name)));
+
+		} else {
+			$factory = $name;
 		}
 
 		// Check container exist
@@ -292,6 +309,8 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 
 		// Add widget component to container/position
 		$positionContainer->addComponent($widget, ($widget->getName() . spl_object_hash($data)));
+
+		return $widget;
 	}
 
 	/**
