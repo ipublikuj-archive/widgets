@@ -3,8 +3,8 @@
  * Data.php
  *
  * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
+ * @license		https://www.ipublikuj.eu
+ * @author		Adam Kadlec https://www.ipublikuj.eu
  * @package		iPublikuj:Widgets!
  * @subpackage	Entities
  * @since		5.0
@@ -17,8 +17,13 @@ namespace IPub\Widgets\Entities;
 use Nette;
 use Nette\Utils;
 
-class Data extends Nette\Object implements IData
+class Data implements IData
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var string
 	 */
@@ -66,7 +71,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getTitle()
+	public function getTitle() : string
 	{
 		return $this->title;
 	}
@@ -74,7 +79,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getDescription()
+	public function getDescription() : ?string
 	{
 		return $this->description;
 	}
@@ -82,7 +87,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getPosition()
+	public function getPosition() : string
 	{
 		return $this->position;
 	}
@@ -90,7 +95,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getPriority()
+	public function getPriority() : int
 	{
 		return $this->priority;
 	}
@@ -98,7 +103,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getStatus()
+	public function getStatus() : bool
 	{
 		return $this->status ? TRUE : FALSE;
 	}
@@ -106,7 +111,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getStyle()
+	public function getStyle() : string
 	{
 		return $this->getParam('template.style', 'default');
 	}
@@ -114,7 +119,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getBadge()
+	public function getBadge() : ?string
 	{
 		return $this->getParam('template.badge', NULL);
 	}
@@ -122,7 +127,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getIcon()
+	public function getIcon() : ?string
 	{
 		return $this->getParam('template.icon', NULL);
 	}
@@ -130,7 +135,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setParams(array $params)
+	public function setParams(array $params) : void
 	{
 		$this->params = $params;
 	}
@@ -138,7 +143,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getParams()
+	public function getParams() : array
 	{
 		return $this->params;
 	}
@@ -146,7 +151,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setParam($key, $value = NULL)
+	public function setParam(string $key, ?string $value = NULL) : void
 	{
 		$keys = explode('.', $key);
 
@@ -172,7 +177,7 @@ class Data extends Nette\Object implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getParam($key, $default = NULL)
+	public function getParam(string $key, ?string $default = NULL) : ?string
 	{
 		$keys = explode('.', $key);
 

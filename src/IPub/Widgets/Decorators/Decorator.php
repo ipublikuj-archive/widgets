@@ -3,8 +3,8 @@
  * Decorator.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Decorators
  * @since          1.0.0
@@ -16,11 +16,10 @@ declare(strict_types = 1);
 
 namespace IPub\Widgets\Decorators;
 
-use Nette;
 use Nette\Application;
+use Nette\Bridges;
 use Nette\Localization;
 
-use IPub;
 use IPub\Widgets;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Exceptions;
@@ -40,10 +39,10 @@ abstract class Decorator extends Widgets\Application\UI\BaseControl implements D
 	/**
 	 * {@inheritdoc}
 	 */
-	public function render(Widgets\Widgets\IWidget $widget)
+	public function render(Widgets\Widgets\IWidget $widget) : void
 	{
 		// Check if control has template
-		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
+		if ($this->template instanceof Bridges\ApplicationLatte\Template) {
 			// Assign vars to template
 			$this->template->widget = $widget;
 

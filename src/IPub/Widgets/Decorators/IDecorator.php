@@ -3,8 +3,8 @@
  * IDecorator.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Decorators
  * @since          1.0.0
@@ -33,6 +33,8 @@ interface IDecorator
 	 * Render widget with decorator
 	 *
 	 * @param Widgets\Widgets\IWidget $widget
+	 *
+	 * @return void
 	 */
-	public function render(Widgets\Widgets\IWidget $widget);
+	public function render(Widgets\Widgets\IWidget $widget)  : void;
 }

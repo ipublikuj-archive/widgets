@@ -3,8 +3,8 @@
  * Filter.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Filters
  * @since          1.0.0
@@ -16,7 +16,6 @@ declare(strict_types = 1);
 
 namespace IPub\Widgets\Filters\Priority;
 
-use IPub;
 use IPub\Widgets\Filters;
 
 /**
@@ -37,7 +36,7 @@ class Filter extends Filters\FilterIterator
 		/** @var  $elements */
 		$elements = iterator_to_array($iterator, FALSE);
 
-		$iterator->uasort(function ($a, $b) use ($elements) {
+		$iterator->uasort(function ($a, $b) use ($elements) : int {
 
 			$priorityA = (int) $a->getPriority();
 			$priorityB = (int) $b->getPriority();
@@ -56,7 +55,7 @@ class Filter extends Filters\FilterIterator
 	/**
 	 * {@inheritdoc}
 	 */
-	public function accept()
+	public function accept() : bool
 	{
 		return TRUE;
 	}

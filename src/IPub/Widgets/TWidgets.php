@@ -3,8 +3,8 @@
  * TWidgets.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     common
  * @since          1.0.0
@@ -16,10 +16,8 @@ declare(strict_types = 1);
 
 namespace IPub\Widgets;
 
-use Nette;
 use Nette\Application;
 
-use IPub;
 use IPub\Widgets\Components;
 
 trait TWidgets
@@ -32,7 +30,7 @@ trait TWidgets
 	/**
 	 * @param Components\IControl $widgetsFactory
 	 */
-	public function injectWidgets(Components\IControl $widgetsFactory)
+	public function injectWidgets(Components\IControl $widgetsFactory) : void
 	{
 		$this->widgetsFactory = $widgetsFactory;
 	}
@@ -42,9 +40,9 @@ trait TWidgets
 	 *
 	 * @return Application\UI\Multiplier
 	 */
-	public function createComponentWidgets()
+	public function createComponentWidgets() : Application\UI\Multiplier
 	{
-		return new Application\UI\Multiplier(function ($position) {
+		return new Application\UI\Multiplier(function ($position) : Components\Control {
 			return $this->widgetsFactory->create($position);
 		});
 	}

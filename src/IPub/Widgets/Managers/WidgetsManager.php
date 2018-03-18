@@ -3,8 +3,8 @@
  * WidgetsManager.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Managers
  * @since          1.0.0
@@ -18,9 +18,7 @@ namespace IPub\Widgets\Managers;
 
 use Nette;
 
-use IPub;
 use IPub\Widgets\Widgets;
-use Tracy\Debugger;
 
 /**
  * Registered widgets manager
@@ -30,8 +28,13 @@ use Tracy\Debugger;
  *
  * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-final class WidgetsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
+final class WidgetsManager implements \ArrayAccess, \IteratorAggregate
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var Widgets\IFactory[][]
 	 */
@@ -47,7 +50,7 @@ final class WidgetsManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 *
 	 * @return bool
 	 */
-	public function has(string $type, string $group = 'default'): bool
+	public function has(string $type, string $group = 'default') : bool
 	{
 		return isset($this->widgets[$group]) && isset($this->widgets[$group][$type]);
 	}
@@ -60,7 +63,7 @@ final class WidgetsManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 *
 	 * @return Widgets\IFactory|NULL
 	 */
-	public function get(string $type, string $group = 'default')
+	public function get(string $type, string $group = 'default') : ?Widgets\IFactory
 	{
 		// Check if widget exists or not...
 		if ($this->has($type, $group)) {
@@ -76,8 +79,10 @@ final class WidgetsManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 * @param Widgets\IFactory $factory
 	 * @param string $type
 	 * @param string $group
+	 *
+	 * @return void
 	 */
-	public function register(Widgets\IFactory $factory, string $type, string $group = 'default')
+	public function register(Widgets\IFactory $factory, string $type, string $group = 'default') : void
 	{
 		// Check if widget is already registered
 		if (!$this->has($type, $group)) {

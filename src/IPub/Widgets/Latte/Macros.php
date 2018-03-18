@@ -3,8 +3,8 @@
  * Macros.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Latte
  * @since          1.0.0
@@ -27,7 +27,7 @@ use Latte\Macros\MacroSet;
 use Latte\PhpWriter;
 
 /**
- * Permissions latte macros definition
+ * Widgets latte macros definition
  *
  * @package        iPublikuj:Widgets!
  * @subpackage     Latte
@@ -41,7 +41,7 @@ final class Macros extends Bridges\ApplicationLatte\UIMacros
 	 *
 	 * @return void
 	 */
-	public static function install(Compiler $compiler)
+	public static function install(Compiler $compiler) : void
 	{
 		$me = new static($compiler);
 
@@ -73,19 +73,24 @@ final class Macros extends Bridges\ApplicationLatte\UIMacros
 		$pos = $tokens->position;
 		$param = $writer->formatArray();
 		$tokens->position = $pos;
+
 		while ($tokens->nextToken()) {
 			if ($tokens->isCurrent('=>') && !$tokens->depth) {
 				$wrap = TRUE;
 				break;
 			}
 		}
+
 		if (empty($wrap)) {
 			$param = substr($param, 1, -1); // removes array() or []
 		}
+
 		$prefix = '';
+
 		if (is_string($name) && strpos($name, '-') === FALSE) {
 			$prefix = '"widgets-" .';
 		}
+
 		return "/* line $node->startLine */ "
 		. ($name[0] === '$' ? "if (is_object($name)) \$_tmp = $name; else " : '')
 		. '$_tmp = $this->global->uiControl->getComponent('. $prefix . $name . '); '

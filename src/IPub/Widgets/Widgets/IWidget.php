@@ -3,8 +3,8 @@
  * IWidget.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Widgets
  * @since          1.0.0
@@ -16,8 +16,6 @@ declare(strict_types = 1);
 
 namespace IPub\Widgets\Widgets;
 
-use IPub;
-use IPub\Widgets;
 use IPub\Widgets\Entities;
 
 /**
@@ -35,33 +33,33 @@ interface IWidget
 	 *
 	 * @return string
 	 */
-	function getName();
+	function getName() : string;
 
 	/**
 	 * Get current widget description
 	 *
 	 * @return string
 	 */
-	function getDescription();
+	function getDescription() : string;
 
 	/**
 	 * Get current widget priority
 	 *
 	 * @return int
 	 */
-	function getPriority();
+	function getPriority() : int;
 
 	/**
 	 * Get current widget status
 	 *
 	 * @return int
 	 */
-	function getStatus();
+	function getStatus() : int;
 
 	/**
 	 * Get current widget position name
 	 *
 	 * @return string
 	 */
-	function getPosition();
+	function getPosition() : string;
 }

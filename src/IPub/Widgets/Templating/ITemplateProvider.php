@@ -3,8 +3,8 @@
  * ITemplateProvider.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Templating
  * @since          1.0.0
@@ -31,19 +31,19 @@ interface ITemplateProvider
 	 *
 	 * @return string
 	 */
-	function getWidgetTemplateFile();
+	function getWidgetTemplateFile() : string;
 
 	/**
 	 * Provide widget decorator template path
 	 *
 	 * @return string
 	 */
-	function getDecoratorTemplateFile();
+	function getDecoratorTemplateFile() : string;
 
 	/**
 	 * Provide widget container template path
 	 *
 	 * @return string
 	 */
-	function getContainerTemplateFile();
+	function getContainerTemplateFile() : string;
 }

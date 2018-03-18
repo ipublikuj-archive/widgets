@@ -3,8 +3,8 @@
  * Widget.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Widgets
  * @since          1.0.0
@@ -48,13 +48,13 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 
 	/**
 	 * @param Entities\IData $data
-	 * @param ComponentModel\IContainer $parent
-	 * @param string $name
+	 * @param ComponentModel\IContainer|NULL $parent
+	 * @param string|NULL $name
 	 */
 	public function __construct(
 		Entities\IData $data,
-		ComponentModel\IContainer $parent = NULL,
-		string $name = NULL
+		?ComponentModel\IContainer $parent = NULL,
+		?string $name = NULL
 	) {
 		parent::__construct($parent, $name);
 
@@ -64,7 +64,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getTitle()
+	public function getTitle() : string
 	{
 		$title = $this->data->getTitle();
 
@@ -74,7 +74,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getDescription()
+	public function getDescription() : string
 	{
 		return $this->data->getDescription();
 	}
@@ -82,7 +82,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getPriority()
+	public function getPriority() : int
 	{
 		return $this->data->getPriority();
 	}
@@ -90,7 +90,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getStatus()
+	public function getStatus() : int
 	{
 		return $this->data->getStatus();
 	}
@@ -98,7 +98,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getPosition()
+	public function getPosition() : string
 	{
 		return $this->data->getPosition();
 	}
@@ -106,7 +106,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * Before render actions
 	 */
-	protected function beforeRender()
+	protected function beforeRender() : void
 	{
 		// Check if control has template
 		if (!$this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
@@ -191,7 +191,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * Render widget
 	 */
-	public function render()
+	public function render() : void
 	{
 		$this->beforeRender();
 

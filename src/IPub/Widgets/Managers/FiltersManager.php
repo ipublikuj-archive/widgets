@@ -3,8 +3,8 @@
  * FilterManager.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Managers
  * @since          1.0.0
@@ -19,7 +19,6 @@ namespace IPub\Widgets\Managers;
 use Nette;
 use Nette\Application;
 
-use IPub;
 use IPub\Widgets\Exceptions;
 use IPub\Widgets\Filters;
 
@@ -31,8 +30,13 @@ use IPub\Widgets\Filters;
  *
  * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-final class FiltersManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
+final class FiltersManager implements \ArrayAccess, \IteratorAggregate
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var \SplPriorityQueue
 	 */
@@ -67,7 +71,7 @@ final class FiltersManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 *
 	 * @return Filters\IFactory|NULL
 	 */
-	public function get(string $name)
+	public function get(string $name) : ?Filters\IFactory
 	{
 		return $this->has($name) ? $this->factories[$name] : NULL;
 	}
@@ -78,8 +82,10 @@ final class FiltersManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 * @param Filters\IFactory $filter
 	 * @param string $name
 	 * @param int $priority
+	 *
+	 * @return void
 	 */
-	public function register(Filters\IFactory $filter, string $name, int $priority = 0)
+	public function register(Filters\IFactory $filter, string $name, int $priority = 0) : void
 	{
 		$this->unregister($name);
 
@@ -91,8 +97,10 @@ final class FiltersManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 * Unregisters a filter
 	 *
 	 * @param string $name
+	 *
+	 * @return void
 	 */
-	public function unregister(string $name)
+	public function unregister(string $name) : void
 	{
 		if ($this->has($name)) {
 			unset($this->factories[$name]);
@@ -108,8 +116,7 @@ final class FiltersManager extends Nette\Object implements \ArrayAccess, \Iterat
 
 		$this->filters->rewind();
 
-		while ($this->filters->valid())
-		{
+		while ($this->filters->valid()) {
 			$filter = $this->filters->current();
 
 			if ($this->has($filter)) {
@@ -151,7 +158,7 @@ final class FiltersManager extends Nette\Object implements \ArrayAccess, \Iterat
 	 *
 	 * @param string $offset
 	 * @param string[]|NULL $value
-	 * 
+	 *
 	 * @throws Exceptions\InvalidStateException
 	 */
 	public function offsetSet($offset, $value)

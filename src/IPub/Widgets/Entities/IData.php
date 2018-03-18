@@ -3,8 +3,8 @@
  * IData.php
  *
  * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
+ * @license		https://www.ipublikuj.eu
+ * @author		Adam Kadlec https://www.ipublikuj.eu
  * @package		iPublikuj:Widgets!
  * @subpackage	Entities
  * @since		5.0
@@ -21,86 +21,90 @@ interface IData
 	 *
 	 * @return string
 	 */
-	public function getTitle();
+	public function getTitle() : string;
 
 	/**
 	 * Get stored widget description
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
-	public function getDescription();
+	public function getDescription() : ?string;
 
 	/**
 	 * Get stored widget position name
 	 *
-	 * @return int
+	 * @return string
 	 */
-	public function getPosition();
+	public function getPosition() : string;
 
 	/**
 	 * Get stored widget priority
 	 *
 	 * @return int
 	 */
-	public function getPriority();
+	public function getPriority() : int;
 
 	/**
 	 * Get stored widget priority
 	 *
 	 * @return bool
 	 */
-	public function getStatus();
+	public function getStatus() : bool;
 
 	/**
 	 * Get stored widget style name
 	 *
 	 * @return string
 	 */
-	public function getStyle();
+	public function getStyle() : string;
 
 	/**
 	 * Get stored widget badge name
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
-	public function getBadge();
+	public function getBadge() : ?string;
 
 	/**
 	 * Get stored widget icon name
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
-	public function getIcon();
+	public function getIcon() : ?string;
 
 	/**
 	 * Set stored widget params
 	 *
 	 * @param array $params
+	 *
+	 * @return void
 	 */
-	public function setParams(array $params);
+	public function setParams(array $params) : void;
 
 	/**
 	 * Get stored widget params
 	 *
 	 * @return array
 	 */
-	public function getParams();
+	public function getParams() : array;
 
 	/**
 	 * Set stored widget param
 	 *
 	 * @param string $key
 	 * @param string $value
+	 *
+	 * @return void
 	 */
-	public function setParam($key, $value = NULL);
+	public function setParam(string $key, ?string $value = NULL) : void;
 
 	/**
 	 * Get stored widget param
 	 *
 	 * @param string $key
-	 * @param string $default
+	 * @param string|NULL $default
 	 *
-	 * @return mixed
+	 * @return string|NULL
 	 */
-	public function getParam($key, $default = NULL);
+	public function getParam(string $key, ?string $default = NULL) : ?string;
 }

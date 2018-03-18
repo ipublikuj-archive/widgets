@@ -3,8 +3,8 @@
  * DecoratorsManager.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Managers
  * @since          1.0.0
@@ -18,7 +18,6 @@ namespace IPub\Widgets\Managers;
 
 use Nette;
 
-use IPub;
 use IPub\Widgets\Decorators;
 
 /**
@@ -29,8 +28,13 @@ use IPub\Widgets\Decorators;
  *
  * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  */
-final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \IteratorAggregate
+final class DecoratorsManager implements \ArrayAccess, \IteratorAggregate
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var Decorators\IFactory[]
 	 */
@@ -55,7 +59,7 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 *
 	 * @return Decorators\IFactory|NULL
 	 */
-	public function get(string $name)
+	public function get(string $name) : ?Decorators\IFactory
 	{
 		return $this->has($name) ? $this->decorators[$name] : NULL;
 	}
@@ -65,8 +69,10 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 *
 	 * @param Decorators\IFactory $decorator
 	 * @param string $name
+	 *
+	 * @return void
 	 */
-	public function register(Decorators\IFactory $decorator, string $name)
+	public function register(Decorators\IFactory $decorator, string $name) : void
 	{
 		$this->unregister($name);
 
@@ -79,8 +85,10 @@ final class DecoratorsManager extends Nette\Object implements \ArrayAccess, \Ite
 	 * Un-registers a decorator
 	 *
 	 * @param string $name
+	 *
+	 * @return void
 	 */
-	public function unregister(string $name)
+	public function unregister(string $name) : void
 	{
 		if (array_key_exists($name, $this->decorators)) {
 			unset($this->decorators[$name]);

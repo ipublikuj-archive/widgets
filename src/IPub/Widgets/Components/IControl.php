@@ -3,8 +3,8 @@
  * IControl.php
  *
  * @copyright      Vice v copyright.php
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Components
  * @since          1.0.0

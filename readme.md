@@ -35,4 +35,4 @@ extensions:
 Learn how to use widgets manager for custom widgets in [documentation](https://github.com/iPublikuj/widgets/blob/master/docs/en/index.md).
 
 ***
-Homepage [http://www.ipublikuj.eu](http://www.ipublikuj.eu) and repository [http://github.com/iPublikuj/widgets](http://github.com/iPublikuj/widgets).
+Homepage [https://www.ipublikuj.eu](https://www.ipublikuj.eu) and repository [http://github.com/iPublikuj/widgets](http://github.com/iPublikuj/widgets).

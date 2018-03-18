@@ -4,8 +4,8 @@
  * @testCase
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Tests
  * @since          1.0.0
@@ -22,7 +22,6 @@ use Nette;
 use Tester;
 use Tester\Assert;
 
-use IPub;
 use IPub\Widgets;
 use IPub\Widgets\Components;
 use IPub\Widgets\Decorators;
@@ -32,10 +31,20 @@ require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bootstrap.
 
 class ExtensionTest extends Tester\TestCase
 {
+	public function testCompilersServices() : void
+	{
+		$dic = $this->createContainer();
+
+		Assert::true($dic->getService('widgets.widgets.manager') instanceof Managers\WidgetsManager);
+		Assert::true($dic->getService('widgets.widgets.component') instanceof Components\IControl);
+		Assert::true($dic->getService('widgets.decorators.manager') instanceof Managers\DecoratorsManager);
+		Assert::true($dic->getService('widgets.decorator.raw') instanceof Decorators\Raw\IControl);
+	}
+
 	/**
 	 * @return Nette\DI\Container
 	 */
-	protected function createContainer()
+	protected function createContainer() : Nette\DI\Container
 	{
 		$config = new Nette\Configurator();
 		$config->setTempDirectory(TEMP_DIR);
@@ -50,16 +59,6 @@ class ExtensionTest extends Tester\TestCase
 		]);
 
 		return $config->createContainer();
-	}
-
-	public function testCompilersServices()
-	{
-		$dic = $this->createContainer();
-
-		Assert::true($dic->getService('widgets.widgets.manager') instanceof Managers\WidgetsManager);
-		Assert::true($dic->getService('widgets.widgets.component') instanceof Components\IControl);
-		Assert::true($dic->getService('widgets.decorators.manager') instanceof Managers\DecoratorsManager);
-		Assert::true($dic->getService('widgets.decorator.raw') instanceof Decorators\Raw\IControl);
 	}
 }
 

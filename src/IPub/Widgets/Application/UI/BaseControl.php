@@ -3,8 +3,8 @@
  * BaseControl.php
  *
  * @copyright      Vice v copyright.php
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Application
  * @since          1.0.0
@@ -16,11 +16,9 @@ declare(strict_types = 1);
 
 namespace IPub\Widgets\Application\UI;
 
-use Nette;
 use Nette\Application;
 use Nette\Localization;
 
-use IPub;
 use IPub\Widgets\Exceptions;
 
 /**
@@ -47,8 +45,10 @@ abstract class BaseControl extends Application\UI\Control
 
 	/**
 	 * @param Localization\ITranslator $translator
+	 *
+	 * @return void
 	 */
-	public function injectTranslator(Localization\ITranslator $translator = NULL)
+	public function injectTranslator(Localization\ITranslator $translator = NULL) : void
 	{
 		$this->translator = $translator;
 	}
@@ -58,9 +58,11 @@ abstract class BaseControl extends Application\UI\Control
 	 *
 	 * @param string $templateFile
 	 *
+	 * @return void
+	 *
 	 * @throws Exceptions\FileNotFoundException
 	 */
-	public function setTemplateFile($templateFile)
+	public function setTemplateFile($templateFile) : void
 	{
 		// Check if template file exists...
 		if (!is_file($templateFile)) {
@@ -86,7 +88,7 @@ abstract class BaseControl extends Application\UI\Control
 	/**
 	 * @param Localization\ITranslator $translator
 	 */
-	public function setTranslator(Localization\ITranslator $translator)
+	public function setTranslator(Localization\ITranslator $translator) : void
 	{
 		$this->translator = $translator;
 	}
@@ -94,7 +96,7 @@ abstract class BaseControl extends Application\UI\Control
 	/**
 	 * @return Localization\ITranslator|NULL
 	 */
-	public function getTranslator()
+	public function getTranslator() : ?Localization\ITranslator
 	{
 		if ($this->translator instanceof Localization\ITranslator) {
 			return $this->translator;

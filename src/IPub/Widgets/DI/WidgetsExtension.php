@@ -3,8 +3,8 @@
  * WidgetsManagerExtension.php
  *
  * @copyright      More in license.md
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     DI
  * @since          1.0.0
@@ -22,7 +22,6 @@ use Nette\PhpGenerator as Code;
 use Nette\Security as NS;
 use Nette\Utils;
 
-use IPub;
 use IPub\Widgets;
 use IPub\Widgets\Components;
 use IPub\Widgets\Decorators;
@@ -48,7 +47,7 @@ final class WidgetsExtension extends DI\CompilerExtension
 	// Define tag string for widgets decorators
 	const TAG_WIDGET_FILTER = 'ipub.widgets.filter';
 
-	public function loadConfiguration()
+	public function loadConfiguration() : void
 	{
 		// Get container builder
 		$builder = $this->getContainerBuilder();
@@ -59,11 +58,11 @@ final class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets manager
 		$builder->addDefinition($this->prefix('widgets.manager'))
-			->setClass(Widgets\Managers\WidgetsManager::class)
+			->setType(Widgets\Managers\WidgetsManager::class)
 			->addTag('cms.widgets');
 
 		$builder->addDefinition($this->prefix('widgets.component'))
-			->setClass(Components\Control::class)
+			->setType(Components\Control::class)
 			->setImplement(Components\IControl::class)
 			->setArguments([new Code\PhpLiteral('$position')])
 			->setInject(TRUE)
@@ -75,12 +74,12 @@ final class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets filter manager
 		$builder->addDefinition($this->prefix('filters.manager'))
-			->setClass(Widgets\Managers\FiltersManager::class)
+			->setType(Widgets\Managers\FiltersManager::class)
 			->addTag('cms.widgets');
 
 		// Widgets priority filter
 		$builder->addDefinition('widgets.filters.priority')
-			->setClass(Filters\Priority\Filter::class)
+			->setType(Filters\Priority\Filter::class)
 			->setImplement(Filters\Priority\IFilter::class)
 			->setInject(TRUE)
 			->addTag('cms.widgets')
@@ -88,7 +87,7 @@ final class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets status filter
 		$builder->addDefinition('widgets.filters.status')
-			->setClass(Filters\Status\Filter::class)
+			->setType(Filters\Status\Filter::class)
 			->setImplement(Filters\Status\IFilter::class)
 			->setInject(TRUE)
 			->addTag('cms.widgets')
@@ -100,12 +99,12 @@ final class WidgetsExtension extends DI\CompilerExtension
 
 		// Widgets decorators manager
 		$builder->addDefinition($this->prefix('decorators.manager'))
-			->setClass(Widgets\Managers\DecoratorsManager::class)
+			->setType(Widgets\Managers\DecoratorsManager::class)
 			->addTag('cms.widgets');
 
 		// Widgets raw decorator
 		$builder->addDefinition('widgets.decorator.raw')
-			->setClass(Decorators\Raw\Control::class)
+			->setType(Decorators\Raw\Control::class)
 			->setImplement(Decorators\Raw\IControl::class)
 			->setInject(TRUE)
 			->addTag('cms.widgets')
@@ -115,7 +114,7 @@ final class WidgetsExtension extends DI\CompilerExtension
 	/**
 	 * {@inheritdoc}
 	 */
-	public function beforeCompile()
+	public function beforeCompile() : void
 	{
 		parent::beforeCompile();
 
@@ -166,11 +165,11 @@ final class WidgetsExtension extends DI\CompilerExtension
 			foreach ($extension->getWidgets() as $group => $widgets) {
 				foreach ($widgets as $id => $properties) {
 					if (!isset($properties['type'])) {
-						
+
 					}
 
 					if (!isset($properties['position'])) {
-						
+
 					}
 
 					$type = $properties['type'];
@@ -195,8 +194,10 @@ final class WidgetsExtension extends DI\CompilerExtension
 	/**
 	 * @param Nette\Configurator $config
 	 * @param string $extensionName
+	 *
+	 * @return void
 	 */
-	public static function register(Nette\Configurator $config, string $extensionName = 'widgets')
+	public static function register(Nette\Configurator $config, string $extensionName = 'widgets') : void
 	{
 		$config->onCompile[] = function (Nette\Configurator $config, Nette\DI\Compiler $compiler) use ($extensionName) {
 			$compiler->addExtension($extensionName, new WidgetsExtension());

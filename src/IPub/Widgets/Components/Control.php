@@ -3,8 +3,8 @@
  * Control.php
  *
  * @copyright      Vice v copyright.php
- * @license        http://www.ipublikuj.eu
- * @author         Adam Kadlec http://www.ipublikuj.eu
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec https://www.ipublikuj.eu
  * @package        iPublikuj:Widgets!
  * @subpackage     Components
  * @since          1.0.0
@@ -16,13 +16,12 @@ declare(strict_types = 1);
 
 namespace IPub\Widgets\Components;
 
-use Nette;
 use Nette\Application;
+use Nette\Bridges;
 use Nette\ComponentModel;
 use Nette\Localization;
 use Nette\Utils;
 
-use IPub;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
@@ -83,7 +82,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * @param Managers\WidgetsManager $widgetsManager
 	 * @param Managers\DecoratorsManager $decoratorsManager
 	 * @param Managers\FiltersManager $filtersManager
-	 * @param ComponentModel\IContainer $parent
+	 * @param ComponentModel\IContainer|NULL $parent
 	 * @param string|NULL $name
 	 */
 	public function __construct(
@@ -91,8 +90,8 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		Managers\WidgetsManager $widgetsManager,
 		Managers\DecoratorsManager $decoratorsManager,
 		Managers\FiltersManager $filtersManager,
-		ComponentModel\IContainer $parent = NULL,
-		string $name = NULL
+		?ComponentModel\IContainer $parent = NULL,
+		?string $name = NULL
 	) {
 		parent::__construct($parent, $name);
 
@@ -115,7 +114,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @throws Exceptions\DecoratorNotRegisteredException
 	 */
-	protected function attached($presenter)
+	protected function attached($presenter) : void
 	{
 		parent::attached($presenter);
 
@@ -133,7 +132,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	/**
 	 * Render widgets in selected position
 	 */
-	public function render()
+	public function render() : void
 	{
 		foreach (func_get_args() as $arg) {
 			// Check if decorator name is provided
@@ -151,7 +150,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		}
 
 		// Check if control has template
-		if ($this->template instanceof Nette\Bridges\ApplicationLatte\Template) {
+		if ($this->template instanceof Bridges\ApplicationLatte\Template) {
 			// Assign vars to template
 			$this->template->add('widgets', $this->getWidgets());
 
@@ -183,9 +182,11 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @param string $decorator
 	 *
+	 * @return void
+	 *
 	 * @throws Exceptions\DecoratorNotRegisteredException
 	 */
-	public function setDecorator(string $decorator)
+	public function setDecorator(string $decorator) : void
 	{
 		// Try to find decorator factory
 		if ($factory = $this->decoratorsManager->get($decorator)) {
@@ -207,8 +208,10 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 * Set widgets group
 	 *
 	 * @param string $group
+	 *
+	 * @return void
 	 */
-	public function setGroup(string $group)
+	public function setGroup(string $group) : void
 	{
 		$this->group = $group;
 	}
@@ -228,7 +231,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 	 *
 	 * @return array
 	 */
-	public function getWidgets()
+	public function getWidgets() : array
 	{
 		if (
 			($container = $this->getComponent('widgets')->getComponent($this->group, FALSE))
@@ -292,7 +295,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		$container = $this->getComponent('widgets')->getComponent($group, FALSE);
 
 		if (!$container) {
-			$this->getComponent('widgets')->addComponent(new Nette\ComponentModel\Container, $group);
+			$this->getComponent('widgets')->addComponent(new ComponentModel\Container, $group);
 			$container = $this->getComponent('widgets')->getComponent($group);
 		}
 
@@ -300,7 +303,7 @@ class Control extends IPub\Widgets\Application\UI\BaseControl
 		$positionContainer = $container->getComponent($position, FALSE);
 
 		if (!$positionContainer) {
-			$container->addComponent(new Nette\ComponentModel\Container, $position);
+			$container->addComponent(new ComponentModel\Container, $position);
 			$positionContainer = $container->getComponent($position);
 		}
 
