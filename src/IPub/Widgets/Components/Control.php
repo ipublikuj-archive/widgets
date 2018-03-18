@@ -22,6 +22,7 @@ use Nette\ComponentModel;
 use Nette\Localization;
 use Nette\Utils;
 
+use IPub\Widgets\Application\UI;
 use IPub\Widgets\Decorators;
 use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
@@ -40,7 +41,7 @@ use IPub\Widgets\Widgets;
  *
  * @property Application\UI\ITemplate $template
  */
-class Control extends IPub\Widgets\Application\UI\BaseControl
+class Control extends UI\BaseControl
 {
 	/**
 	 * @var array
