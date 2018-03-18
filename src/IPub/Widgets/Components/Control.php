@@ -4,7 +4,7 @@
  *
  * @copyright      Vice v copyright.php
  * @license        https://www.ipublikuj.eu
- * @author         Adam Kadlec https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  * @package        iPublikuj:Widgets!
  * @subpackage     Components
  * @since          1.0.0

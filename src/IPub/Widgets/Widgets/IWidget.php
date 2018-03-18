@@ -4,7 +4,7 @@
  *
  * @copyright      More in license.md
  * @license        https://www.ipublikuj.eu
- * @author         Adam Kadlec https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  * @package        iPublikuj:Widgets!
  * @subpackage     Widgets
  * @since          1.0.0
@@ -15,8 +15,6 @@
 declare(strict_types = 1);
 
 namespace IPub\Widgets\Widgets;
-
-use IPub\Widgets\Entities;
 
 /**
  * Widgets control interface
@@ -33,7 +31,7 @@ interface IWidget
 	 *
 	 * @return string
 	 */
-	function getName() : string;
+	function getName();
 
 	/**
 	 * Get current widget description
@@ -52,9 +50,9 @@ interface IWidget
 	/**
 	 * Get current widget status
 	 *
-	 * @return int
+	 * @return bool
 	 */
-	function getStatus() : int;
+	function getStatus() : bool;
 
 	/**
 	 * Get current widget position name

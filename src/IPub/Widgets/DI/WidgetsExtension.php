@@ -4,7 +4,7 @@
  *
  * @copyright      More in license.md
  * @license        https://www.ipublikuj.eu
- * @author         Adam Kadlec https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  * @package        iPublikuj:Widgets!
  * @subpackage     DI
  * @since          1.0.0
@@ -19,13 +19,10 @@ namespace IPub\Widgets\DI;
 use Nette;
 use Nette\DI;
 use Nette\PhpGenerator as Code;
-use Nette\Security as NS;
-use Nette\Utils;
 
 use IPub\Widgets;
 use IPub\Widgets\Components;
 use IPub\Widgets\Decorators;
-use IPub\Widgets\Exceptions;
 use IPub\Widgets\Filters;
 
 /**
@@ -47,6 +44,9 @@ final class WidgetsExtension extends DI\CompilerExtension
 	// Define tag string for widgets decorators
 	const TAG_WIDGET_FILTER = 'ipub.widgets.filter';
 
+	/**
+	 * @return void
+	 */
 	public function loadConfiguration() : void
 	{
 		// Get container builder

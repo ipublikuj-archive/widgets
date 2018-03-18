@@ -4,7 +4,7 @@
  *
  * @copyright      More in license.md
  * @license        https://www.ipublikuj.eu
- * @author         Adam Kadlec https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  * @package        iPublikuj:Widgets!
  * @subpackage     Widgets
  * @since          1.0.0
@@ -22,12 +22,9 @@ use Nette\ComponentModel;
 use Nette\Localization;
 use Nette\Utils;
 
-use IPub;
 use IPub\Widgets;
-use IPub\Widgets\Decorators;
 use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
-use Tracy\Debugger;
 
 /**
  * Widgets control definition
@@ -90,7 +87,7 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getStatus() : int
+	public function getStatus() : bool
 	{
 		return $this->data->getStatus();
 	}

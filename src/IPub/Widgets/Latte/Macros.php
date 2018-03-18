@@ -4,7 +4,7 @@
  *
  * @copyright      More in license.md
  * @license        https://www.ipublikuj.eu
- * @author         Adam Kadlec https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  * @package        iPublikuj:Widgets!
  * @subpackage     Latte
  * @since          1.0.0
@@ -16,14 +16,12 @@ declare(strict_types = 1);
 
 namespace IPub\Widgets\Latte;
 
-use Nette;
 use Nette\Bridges;
 use Nette\Utils;
 
 use Latte;
 use Latte\Compiler;
 use Latte\MacroNode;
-use Latte\Macros\MacroSet;
 use Latte\PhpWriter;
 
 /**

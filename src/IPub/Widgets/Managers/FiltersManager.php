@@ -4,7 +4,7 @@
  *
  * @copyright      More in license.md
  * @license        https://www.ipublikuj.eu
- * @author         Adam Kadlec https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
  * @package        iPublikuj:Widgets!
  * @subpackage     Managers
  * @since          1.0.0
@@ -17,7 +17,6 @@ declare(strict_types = 1);
 namespace IPub\Widgets\Managers;
 
 use Nette;
-use Nette\Application;
 
 use IPub\Widgets\Exceptions;
 use IPub\Widgets\Filters;
@@ -146,7 +145,7 @@ final class FiltersManager implements \ArrayAccess, \IteratorAggregate
 	 *
 	 * @param string $offset
 	 *
-	 * @return string[]
+	 * @return mixed
 	 */
 	public function offsetGet($offset)
 	{
