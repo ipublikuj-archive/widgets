@@ -71,7 +71,7 @@ class Data implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getTitle() : string
+	public function getTitle() : ?string
 	{
 		return $this->title;
 	}
@@ -177,7 +177,7 @@ class Data implements IData
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getParam(string $key, ?string $default = NULL) : ?string
+	public function getParam(string $key, $default = NULL) : ?string
 	{
 		$keys = explode('.', $key);
 

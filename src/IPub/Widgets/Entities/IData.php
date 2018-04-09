@@ -19,9 +19,9 @@ interface IData
 	/**
 	 * Get stored widget title
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
-	public function getTitle() : string;
+	public function getTitle() : ?string;
 
 	/**
 	 * Get stored widget description
@@ -102,9 +102,9 @@ interface IData
 	 * Get stored widget param
 	 *
 	 * @param string $key
-	 * @param string|NULL $default
+	 * @param mixed|NULL $default
 	 *
 	 * @return string|NULL
 	 */
-	public function getParam(string $key, ?string $default = NULL) : ?string;
+	public function getParam(string $key, $default = NULL) : ?string;
 }

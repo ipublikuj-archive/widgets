@@ -28,6 +28,7 @@ use IPub\Widgets\Entities;
 use IPub\Widgets\Exceptions;
 use IPub\Widgets\Managers;
 use IPub\Widgets\Widgets;
+use Tracy\Debugger;
 
 /**
  * Widgets container control definition
@@ -105,7 +106,7 @@ class Control extends UI\BaseControl
 		$this->filtersManager = $filtersManager;
 
 		// Register widgets container
-		$this->addComponent(new ComponentModel\Container(), 'widgets');
+		$this->addComponent(new ComponentModel\Container, 'widgets');
 	}
 
 	/**
@@ -152,8 +153,10 @@ class Control extends UI\BaseControl
 
 		// Check if control has template
 		if ($this->template instanceof Bridges\ApplicationLatte\Template) {
+			$widgets = $this->getWidgets();
+
 			// Assign vars to template
-			$this->template->add('widgets', $this->getWidgets());
+			$this->template->add('widgets', $widgets !== NULL ? $widgets : []);
 
 			// Check if translator is available
 			if ($this->getTranslator() instanceof Localization\ITranslator) {
@@ -230,15 +233,16 @@ class Control extends UI\BaseControl
 	/**
 	 * Get all registered widgets in position
 	 *
-	 * @return array
+	 * @return \Iterator|NULL
 	 */
-	public function getWidgets() : array
+	public function getWidgets() : ?\Iterator
 	{
 		if (
 			($container = $this->getComponent('widgets')->getComponent($this->group, FALSE))
 			&& ($positionContainer = $container->getComponent($this->position, FALSE))
 			&& ($widgets = $positionContainer->getComponents())
 		) {
+			/*
 			// Apply widgets filters
 			foreach ($this->filtersManager as $filter) {
 					$widgets = $filter->create($widgets, [
@@ -247,11 +251,12 @@ class Control extends UI\BaseControl
 						'status' => 1,
 					]);
 			}
+			*/
 
 			return $widgets;
 		}
 
-		return [];
+		return NULL;
 	}
 
 	/**
@@ -292,19 +297,23 @@ class Control extends UI\BaseControl
 			$factory = $name;
 		}
 
-		// Check container exist
+		/** @var ComponentModel\Container $container */
 		$container = $this->getComponent('widgets')->getComponent($group, FALSE);
 
 		if (!$container) {
 			$this->getComponent('widgets')->addComponent(new ComponentModel\Container, $group);
+
+			/** @var ComponentModel\Container $container */
 			$container = $this->getComponent('widgets')->getComponent($group);
 		}
 
-		// Check container exist
+		/** @var ComponentModel\Container $positionContainer */
 		$positionContainer = $container->getComponent($position, FALSE);
 
 		if (!$positionContainer) {
 			$container->addComponent(new ComponentModel\Container, $position);
+
+			/** @var ComponentModel\Container $positionContainer */
 			$positionContainer = $container->getComponent($position);
 		}
 
