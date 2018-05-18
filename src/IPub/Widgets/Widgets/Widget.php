@@ -155,13 +155,13 @@ abstract class Widget extends Widgets\Application\UI\BaseControl implements IWid
 		}
 
 		// Assign basic widget data to template
-		$this->template->add('badge', $badge);
-		$this->template->add('icon', $icon);
-		$this->template->add('title', [
+		$this->template->badge = $badge;
+		$this->template->icon = $icon;
+		$this->template->title = [
 			'text'   => $name,
 			'insert' => $this->data->getParam('widget.title.insert', TRUE),
 			'hidden' => $this->data->getParam('widget.title.hidden', FALSE)
-		]);
+		];
 
 		// Check if translator is available
 		if ($this->getTranslator() instanceof Localization\ITranslator) {
